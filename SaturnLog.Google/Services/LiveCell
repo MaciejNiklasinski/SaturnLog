@@ -1,0 +1,127 @@
+﻿using Google.Apis.Sheets.v4.Data;
+using SaturnLog.Google.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SaturnLog.Google
+{
+    // LiveSpreadsheet cell
+    public class LiveCell
+    {
+        #region Private Fields
+        // Data stored by the cell. 
+        // Null - data hasn't been loaded, by might exist.
+        // "" - empty cell.
+        private string _data;
+        #endregion
+        
+        #region Properties
+        // Spreadsheet id
+        public string SpreadsheetId { get; }
+        // Sheet title id
+        public string SheetTitleId { get; }
+
+        // Index of the cell column - sheet, not range relative.
+        public int ColumnIndex { get; set; }
+
+        // Index of the cell row - sheet, not range relative.
+        public int RowIndex { get; set; }
+
+        // Range string
+        public string Range
+        { get { return RangeTranslator.GetCellString(this.SheetTitleId, this.ColumnIndex, this.RowIndex); } }
+        #endregion
+
+        // Create
+        #region Constructors
+        // Empty from parameters
+        public LiveCell(string spreadsheetId, string sheetTitleId, int columnIndex, int rowIndex)
+        {
+            // Assign spreadsheet id.
+            this.SpreadsheetId = spreadsheetId;
+
+            // Assign sheet title id.
+            this.SheetTitleId = sheetTitleId;
+
+            // Assign cell location parameters.
+            this.ColumnIndex = columnIndex;
+            this.RowIndex = rowIndex;
+        }
+
+        // Parameters and data
+        public LiveCell(string spreadsheetId, string sheetTitleId, int columnIndex, int rowIndex, string data) 
+            : this(spreadsheetId,sheetTitleId, columnIndex, rowIndex)
+        {
+            // Fill cell with the provided data.
+            this._data = data;
+        }
+
+        // Parameters and data
+        public LiveCell(string spreadsheetId, string sheetTitleId, int columnIndex, int rowIndex, object data)
+            : this(spreadsheetId, sheetTitleId, columnIndex, rowIndex, data.ToString()) { }
+
+        // Parameters and content
+        public LiveCell(string spreadsheetId, string sheetTitleId, int columnIndex, int rowIndex, CellData cell) 
+            : this(spreadsheetId, sheetTitleId, columnIndex, rowIndex, cell.GetDataAsString()) { }
+        #endregion
+
+        // Read, Update
+        #region Methods
+        #region GetDataAs
+        // Returns cell data as string.
+        public string GetDataAsString()
+        {
+            // Return cell data.
+            return this._data;
+        }
+
+        // Returns cell data as object.
+        public string GetDataAsObject()
+        {
+            // Return cell data.
+            return this._data;
+        }
+        #endregion
+
+        #region SetDataFrom
+        // Sets cell data from the provided string.
+        public void SetDataFromString(string data, bool ignoreNullData = true)
+        {
+            // If provided data is null, and ignore null data flag
+            // is true, do not override stored data and return.
+            if (data is null && ignoreNullData) return;
+
+            // Set data string.
+            this._data = data;
+        }
+
+        // Sets cell data from the provided object
+        public void SetDataFromObject(object data, bool ignoreNullData = true)
+        {
+            // If provided data is null, and ignore null data flag
+            // is true, do not override stored data and return.
+            if (data is null && ignoreNullData) return;
+
+            // Set data from object string.
+            this._data = data.ToString();
+        }
+
+        // Sets cell data from the provided using Google.Apis.Sheets.v4.Data.CellData
+        public void SetDataFromCellData(CellData cellData, bool ignoreNullData = true)
+        {
+            // Obtain string data stored in the provided cell data.
+            string data = cellData?.GetDataAsString();
+
+            // Use that data to set cell data from the string.
+            this.SetDataFromString(data, ignoreNullData);
+        }
+        #endregion
+        #endregion
+
+        // Delete
+        // TODO
+    }
+}

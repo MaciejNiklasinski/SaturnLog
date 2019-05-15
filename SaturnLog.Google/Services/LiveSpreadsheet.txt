@@ -1,0 +1,319 @@
+﻿using Google.Apis.Sheets.v4.Data;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SaturnLog.Google
+{
+    // Spreadsheet
+    public class LiveSpreadsheet : IDictionary<string, LiveSheet>
+    {
+        #region Private Fields
+        // All the sheets belonging to the spreadsheet indexed by they sheet title id.
+        private IDictionary<string, LiveSheet> _sheetsIndex;
+        #endregion
+
+        #region Properties
+        // Spreadsheet Id
+        public string Id { get; }
+
+        // Spreadsheet Title
+        public string Title { get; }
+
+        // Spreadsheet Url
+        public string Url { get { return "https://docs.google.com/spreadsheets/d/" + this.Id + "/edit"; } }
+        #endregion
+
+        #region Constructors
+        // Private Base. Not to be use on its own.
+        // string spreadsheetId - Google id of the spreadsheet, for example: "16zkzfruZTvqh5-ypKuTlPegST2PuHCVbfL9NfojTOE0".
+        // string title - Spreadsheet title, name visible for the user.
+        private LiveSpreadsheet(string spreadsheetId, string title)
+        {
+            // Assign spreadsheet id
+            this.Id = spreadsheetId;
+
+            // Assign spreadsheet title
+            this.Title = title;
+        }
+
+        // Empty spreadsheet filled with empty sheets matching provided sheet dimensions ranges.
+        public LiveSpreadsheet(string spreadsheetId, string title, IDictionary<string, string> sheetDimensionsRanges) : this(spreadsheetId, title)
+        {
+            // Build sheets index
+            this.BuildEmptySheetsIndexFromDiemensions(sheetDimensionsRanges);
+        }
+
+        // Spreadsheet filled with the provided sheets.
+        public LiveSpreadsheet(string spreadsheetId, string title, IDictionary<string, LiveSheet> sheets) : this(spreadsheetId, title)
+        {
+            // Assign provided sheets as the spreadsheet content.
+            this._sheetsIndex = sheets;
+        }
+
+        // Spreadsheet build base on the provided Google.Apis.Sheets.v4.Data.Spreadsheet.
+        // Contains sheets build base on the data found in the provided spreadsheet.
+        public LiveSpreadsheet(Spreadsheet spreadsheet) : this(spreadsheet.SpreadsheetId, spreadsheet.Properties.Title)
+        {
+            // Build sheets index
+            this.BuildSheetsIndexFromSpreadsheetsData(spreadsheet.Sheets);
+        }
+        #endregion
+
+        #region Methods
+        #region GetDataAs
+        // Returns sheets stored data as a strings grids index. Sheet Title Id / Rows / Columns
+        public IDictionary<string, IList<IList<string>>> GetDataAsStringsGridsIndex()
+        {
+            // Create spreadsheet data placeholder
+            Dictionary<string, IList<IList<string>>> stringsGridsIndex = new Dictionary<string, IList<IList<string>>>();
+
+            // For each of the spreadsheet sheets.
+            foreach (string sheetTitleId in this._sheetsIndex.Keys)
+            {
+                // Get sheet strings grid.
+                IList<IList<string>> stringsGrid = this._sheetsIndex[sheetTitleId].GetDataAsStringsGrid();
+
+                // Add grid in to the strings grids index.
+                stringsGridsIndex.Add(sheetTitleId, stringsGrid);
+            }
+
+            // Return spreadsheet data as strings grids index.
+            return stringsGridsIndex;
+        }
+
+        // Returns sheets stored data as a objects grids index. Sheet Title Id / Rows / Columns
+        public IDictionary<string, IList<IList<object>>> GetDataAsObjectsGridsIndex()
+        {
+            // Create spreadsheet data placeholder
+            Dictionary<string, IList<IList<object>>> objectsGridsIndex = new Dictionary<string, IList<IList<object>>>();
+
+            // For each of the spreadsheet sheets.
+            foreach (string sheetTitleId in this._sheetsIndex.Keys)
+            {
+                // Get sheet objects grid.
+                IList<IList<object>> objectsGrid = this._sheetsIndex[sheetTitleId].GetDataAsObjectsGrid();
+
+                // Add grid in to the objects grids index.
+                objectsGridsIndex.Add(sheetTitleId, objectsGrid);
+            }
+
+            // Return spreadsheet data as objects grids index.
+            return objectsGridsIndex;
+        }
+
+        // Returns sheets stored data as rows lists. Sheet Title Id / Rows
+        public IDictionary<string, IList<LiveRow>> GetDataAsRowsListsIndex()
+        {
+            // Create spreadsheet data placeholder
+            Dictionary<string, IList<LiveRow>> rowsListsIndex = new Dictionary<string, IList<LiveRow>>();
+
+            // For each of the spreadsheet sheets.
+            foreach (string sheetTitleId in this._sheetsIndex.Keys)
+            {
+                // Get sheet rows list.
+                IList<LiveRow> rowsList = this._sheetsIndex[sheetTitleId].GetDataAsRowsList();
+
+                // Add grid in to the rows list.
+                rowsListsIndex.Add(sheetTitleId, rowsList);
+            }
+
+            // Return spreadsheet data as rows lists index.
+            return rowsListsIndex;
+        }
+
+        // Returns sheets stored data as rows lists. Sheet Title Id / Rows
+        public IDictionary<string, LiveSheet> GetDataAsSheetsIndex()
+        {
+            // Create spreadsheet data placeholder
+            Dictionary<string, LiveSheet> sheetsIndex = new Dictionary<string, LiveSheet>();
+
+            // For each of the spreadsheet sheets.
+            foreach (string sheetTitleId in this._sheetsIndex.Keys)
+                // Add sheet in to the sheets index.
+                sheetsIndex.Add(sheetTitleId, this._sheetsIndex[sheetTitleId]);
+
+            // Return spreadsheet data as sheets index.
+            return sheetsIndex;
+        }
+        #endregion
+
+        #region SetDataFrom
+        // Set spreadsheet data from the strings grids index.
+        public void SetDataFromStringsGridsIndex(IDictionary<string, IList<IList<string>>> stringsGridsDataIndex, bool ignoreNullData = true)
+        {
+            // For each sheet strings grid in the provided data stringsGridsDataIndex
+            foreach (KeyValuePair<string, IList<IList<string>>> stringsGridData in stringsGridsDataIndex)
+                // Set value of the appropriate - equal sheet title id - spreadsheet sheet,
+                // according the provided sheet strings grid. 0 and 0 for left and top buffer.
+                this._sheetsIndex[stringsGridData.Key].SetDataFromStringsGrid(0, 0, stringsGridData.Value, ignoreNullData);
+        }
+
+        // Set spreadsheet data from the objects grids index.
+        public void SetDataFromObjectsGridsIndex(IDictionary<string, IList<IList<object>>> objectsGridsDataIndex, bool ignoreNullData = true)
+        {
+            // For each sheet objects grid in the provided data objectsGridsDataIndex
+            foreach (KeyValuePair<string, IList<IList<object>>> objectsGridData in objectsGridsDataIndex)
+                // Set value of the appropriate - equal sheet title id - spreadsheet sheet,
+                // according the provided sheet objects grid. 0 and 0 for left and top buffer.
+                this._sheetsIndex[objectsGridData.Key].SetDataFromObjectsGrid(0, 0, objectsGridData.Value, ignoreNullData);
+        }
+
+        // Set spreadsheet data from the cells grids index.
+        public void SetDataFromCellsGridsIndex(IDictionary<string, IList<IList<CellData>>> cellsGridsDataIndex, bool ignoreNullData = true)
+        {
+            // For each sheet cell data grid in the provided data cellsGridsDataIndex
+            foreach (KeyValuePair<string, IList<IList<CellData>>> cellsGridData in cellsGridsDataIndex)
+                // Set value of the appropriate - equal sheet title id - spreadsheet sheet,
+                // according the provided sheet cell data grid. 0 and 0 for left and top buffer.
+                this._sheetsIndex[cellsGridData.Key].SetDataFromCellsGrid(0, 0, cellsGridData.Value, ignoreNullData);
+        }
+
+        // Set spreadsheet data from the rows lists index.
+        public void SetDataFromRowsListsIndex(IDictionary<string, IList<RowData>> rowsDataIndex, bool ignoreNullData = true)
+        {
+            // For each sheet rows data list in the provided data rowsDataIndex
+            foreach (KeyValuePair<string, IList<RowData>> rowData in rowsDataIndex)
+                // Set value of the appropriate - equal sheet title id - spreadsheet sheet,
+                // according the provided sheet rows data list. 0 and 0 for left and top buffer.
+                this._sheetsIndex[rowData.Key].SetDataFromRowsDataList(0, 0, rowData.Value, ignoreNullData);
+        }
+
+        // Set sheet data from sheets index
+        public void SetDataFromSheetsIndex(IDictionary<string, Sheet> sheetsDataIndex, bool ignoreNullData = true)
+        {
+            // For each sheet data in the provided data sheetsDataIndex
+            foreach (KeyValuePair<string, Sheet> sheetData in sheetsDataIndex)
+                // Set value of the appropriate - equal sheet title id - spreadsheet sheet
+                // according the provided spreadsheet sheets data.
+                this._sheetsIndex[sheetData.Key].SetDataFromSheetData(sheetData.Value, ignoreNullData);
+        }
+
+        // Set sheet data from sheets
+        public void SetDataFromSheetsList(IList<Sheet> sheetsData, bool ignoreNullData = true)
+        {
+            // For each sheet data in the provided data sheetsData
+            foreach (Sheet sheetData in sheetsData)
+                // Set value of the appropriate - equal sheet title id - spreadsheet sheet
+                // according the provided spreadsheet sheets data.
+                this._sheetsIndex[sheetData.Properties.Title].SetDataFromSheetData(sheetData, ignoreNullData);
+        }
+
+        // Set spreadsheet data from the spreadsheet
+        public void SetDataFromData(Spreadsheet spreadsheet, bool ignoreNullData = true)
+        {
+            // Set spreadsheet data from spreadsheet sheets collection.
+            this.SetDataFromSheetsList(spreadsheet.Sheets, ignoreNullData);
+        }
+        #endregion
+        #endregion
+
+        #region Private Helpers
+        // Build sheets index based on the provided dimensions.
+        private void BuildEmptySheetsIndexFromDiemensions(IDictionary<string, string> sheetDimensionsRanges)
+        {
+            // Build sheets index dictionary placeholder.
+            this._sheetsIndex = new Dictionary<string, LiveSheet>();
+
+            // Base on the provided sheet dimensions ranges, create appropriate
+            // number of empty sheets of appropriate size and add it 
+            // into the spreadsheet sheetIndex
+            foreach (var sheetDimensionsRange in sheetDimensionsRanges)
+            {
+                // Translate range string in to the separate parameters.
+                RangeTranslator.RangeStringToParameters(sheetDimensionsRange.Value, out string sheetTitleId, out int leftIndex, out int topIndex, out int columnCount, out int rowCount);
+                
+                // Create empty sheet based on the parameters obtained from the translation
+                // of the dimensions range string back in to the separate parameters.
+                LiveSheet emptySheet = new LiveSheet(this.Id, sheetTitleId, columnCount, rowCount);
+
+                // Add newly created empty sheet in to the spreadsheet sheets index.
+                this._sheetsIndex.Add(sheetTitleId, emptySheet);
+            }
+        }
+
+        // Build sheets index based on the provided sheets data.
+        private void BuildSheetsIndexFromSpreadsheetsData(IList<Sheet> sheetsData)
+        {
+            // Assign placeholder dictionary 
+            this._sheetsIndex = new Dictionary<string, LiveSheet>();
+
+            // For each of the sheets in the provided spreadsheet.
+            foreach (Sheet sheet in sheetsData)
+                // Create and add sheet based on the Google.Apis.Sheets.v4.Data.Sheet
+                // Google.Apis.Sheets.v4.Data found in the provided spreadsheet.
+                this._sheetsIndex.Add(sheet.Properties.Title, new LiveSheet(this.Id, sheet));
+        }
+        #endregion
+
+        #region IDictionary<string, SheetRawData>
+        public ICollection<string> Keys => this._sheetsIndex.Keys;
+
+        public ICollection<LiveSheet> Values => this._sheetsIndex.Values;
+
+        public int Count => this._sheetsIndex.Count;
+
+        public bool IsReadOnly => this._sheetsIndex.IsReadOnly;
+
+        public LiveSheet this[string key] { get => this._sheetsIndex[key]; set => this._sheetsIndex[key] = value; }
+
+        public bool ContainsKey(string key)
+        {
+            return this._sheetsIndex.ContainsKey(key);
+        }
+
+        public void Add(string key, LiveSheet value)
+        {
+            this._sheetsIndex.Add(key, value);
+        }
+
+        public bool Remove(string key)
+        {
+            return this._sheetsIndex.Remove(key);
+        }
+
+        public bool TryGetValue(string key, out LiveSheet value)
+        {
+            return this._sheetsIndex.TryGetValue(key, out value);
+        }
+
+        public void Add(KeyValuePair<string, LiveSheet> item)
+        {
+            this._sheetsIndex.Add(item);
+        }
+
+        public void Clear()
+        {
+            this._sheetsIndex.Clear();
+        }
+
+        public bool Contains(KeyValuePair<string, LiveSheet> item)
+        {
+            return this._sheetsIndex.Contains(item);
+        }
+
+        public void CopyTo(KeyValuePair<string, LiveSheet>[] array, int arrayIndex)
+        {
+            this._sheetsIndex.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(KeyValuePair<string, LiveSheet> item)
+        {
+            return this._sheetsIndex.Remove(item);
+        }
+
+        public IEnumerator<KeyValuePair<string, LiveSheet>> GetEnumerator()
+        {
+            return this._sheetsIndex.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this._sheetsIndex.GetEnumerator();
+        }
+        #endregion
+    }
+}

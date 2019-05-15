@@ -1,0 +1,81 @@
+﻿using Google.Apis.Sheets.v4.Data;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LiveGoogle.Extensions
+{  
+    public static class RowDataExtensions
+    {
+        /// <summary>
+        /// Will return the data stored in the cell as a string value.
+        /// </summary>
+        /// <param name="row">The row containing cell which data is expected to be returned.</param>
+        /// <param name="columnIndex">Index of the column containing cell which data is expected to be returned.</param>
+        /// <returns>String value of the specified cell.</returns>
+        public static string GetCellDataAsString(this RowData row, int columnIndex)
+        {
+            return row.Values?.ElementAtOrDefault(columnIndex)?.GetDataAsString();
+        }
+
+        /// <summary>
+        /// Will return the data stored in the cell as a object value.
+        /// </summary>
+        /// <param name="row">The row containing cell which data is expected to be returned.</param>
+        /// <param name="columnIndex">Index of the column containing cell which data is expected to be returned.</param>
+        /// <returns>Object value of the specified cell.</returns>
+        public static object GetCellDataAsObject(this RowData row, int columnIndex)
+        {
+            return row.Values?.ElementAtOrDefault(columnIndex)?.GetDataAsString();
+        }
+
+        /// <summary>
+        /// Will return the data stored in the cell as a cell data.
+        /// </summary>
+        /// <param name="row">The row containing cell which data is expected to be returned.</param>
+        /// <param name="columnIndex">Index of the column containing cell which data is expected to be returned.</param>
+        /// <returns>Cell data of the specified cell.</returns>
+        public static CellData GetCellDataAsData(this RowData row, int columnIndex)
+        {
+            return row.Values?.ElementAtOrDefault(columnIndex);
+        }
+
+        // row cells data
+        public static IList<string> GetDataAsStrings(this RowData row, int columnsRequired)
+        {
+            // Create empty row strings list placeholder with required 
+            // number of the empty spaces for each cell. 
+            List<string> stringValues = new List<string>(new string[columnsRequired]);
+
+            // If provided row contains data.
+            if (!(row.Values is null))
+                // Foreach cell. 
+                for (int cIndex = 0; cIndex < columnsRequired; cIndex++)
+                    // Assign cell data in to appropriate place on the stringValues list.
+                    stringValues[cIndex] = row.Values.ElementAtOrDefault(cIndex)?.GetDataAsString();
+
+            // Return row strings list.
+            return stringValues;
+        }
+
+        // row cells data
+        public static IList<object> GetDataAsObjects(this RowData row, int columnsRequired)
+        {
+            // Create empty row strings list placeholder with required 
+            // number of the empty spaces for each cell. 
+            List<object> objectValues = new List<object>(new string[columnsRequired]);
+
+            // If provided row contains data.
+            if (!(row.Values is null))
+                // Foreach cell. 
+                for (int cIndex = 0; cIndex < columnsRequired; cIndex++)
+                    // Assign cell data in to appropriate place on the objectValues list.
+                    objectValues[cIndex] = row.Values.ElementAtOrDefault(cIndex)?.GetDataAsObject();
+
+            // Return row objects list.
+            return objectValues;
+        } 
+    }
+}

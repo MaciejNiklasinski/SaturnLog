@@ -1,0 +1,471 @@
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Services;
+using Google.Apis.Util.Store;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
+using System.Linq;
+using Newtonsoft.Json;
+
+namespace SaturnLog.Google
+{
+
+
+    public class GoogleService
+    {
+    //    public static void TOBEREMOVED_TEST(string urlId)
+    //    {
+    //        string range = Google.RangeTranslator.GetRangeString("Sheet1", 10, 20, 30, 40);
+    //        IList<IList<object>> rows = new List<IList<object>>();
+    //        for (int i = 0; i < 20; i++)
+    //        {
+    //            IList<object> row = new List<object>()
+    //            {
+    //                $"rIndex {i} cIndex 0",
+    //                $"rIndex {i} cIndex 1",
+    //                $"rIndex {i} cIndex 2",
+    //                $"rIndex {i} cIndex 3",
+    //                $"rIndex {i} cIndex 4",
+    //                $"rIndex {i} cIndex 5",
+    //                $"rIndex {i} cIndex 6",
+    //                $"rIndex {i} cIndex 7",
+    //                $"rIndex {i} cIndex 8",
+    //                $"rIndex {i} cIndex 9",
+    //                $"rIndex {i} cIndex 10",
+    //                $"rIndex {i} cIndex 11",
+    //                $"rIndex {i} cIndex 12",
+    //                $"rIndex {i} cIndex 13",
+    //                $"rIndex {i} cIndex 14",
+    //                $"rIndex {i} cIndex 15",
+    //                $"rIndex {i} cIndex 16",
+    //                $"rIndex {i} cIndex 17",
+    //                $"rIndex {i} cIndex 18",
+    //                $"rIndex {i} cIndex 19"
+    //            };
+
+    //            rows.Add(row);
+    //        }
+
+
+
+
+
+    //        IList<LiveRow> rowsData = new List<LiveRow>();
+
+
+
+
+
+
+
+
+
+
+
+    //        for (int j = 0; j < 20; j++)
+    //        {
+    //            rowsData.Add(new LiveRow(urlId, "Sheet1", 10, 20, rows[j]));
+    //        }
+
+
+
+
+    //        Google.GoogleService.BatchUpdateRange(new Google.LiveRange(urlId, "Sheet1", 10, 20, rowsData));
+
+    //        Google.GoogleService.UpdateRange(new Google.LiveRange(urlId, "Sheet1", 10, 20, rowsData));
+
+    //    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //public const string SaturnLogID = "16zkzfruZTvqh5-ypKuTlPegST2PuHCVbfL9NfojTOE0";
+
+
+        // Google.Apis.Sheets.v4.SheetService - Google API instance.
+        private static SheetsService _service;
+
+        private static SpreadsheetsIndex _spreadsheets;
+
+
+
+
+
+
+
+
+
+        // If modifying these scopes, delete your previously saved credentials
+        // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
+        static string[] Scopes = { SheetsService.Scope.Drive };
+        static string ApplicationName = "SaturnLog";
+
+        public static void Connect()
+        {
+            // Connect to Google service.
+            GoogleService.GetService();
+
+            // Get cached SpreadsheetsIndex. Table of the url to title id relativity.
+            //GoogleService.GetSpreadsheetIndex();
+
+            // 
+            //GoogleService.
+        }
+
+        public static void Disconnect()
+        {
+            throw new NotImplementedException();
+        }
+
+        #region Spreadsheet
+        public static string AddSpreadsheet(string titleId, IDictionary<string, IList<IList<string>>> sheets)
+        {
+            // Create new spreadsheet.
+            Spreadsheet newSpreadsheet = new Spreadsheet();
+
+            // Create new spreadsheet properties object and assign it
+            // to newly created spreadsheet.
+            newSpreadsheet.Properties = new SpreadsheetProperties();
+
+            if (GoogleService.HasSpreadsheetTitle(titleId))
+                throw new ArgumentException($"Unable to add spreadsheet with requested titleId {titleId}. SpreadsheetsIndex already contains a spreadsheet using such a title id.");
+
+            // Assign requested title to the newly created spreadsheet instance. 
+            newSpreadsheet.Properties.Title = "titleId";
+
+
+
+
+
+
+
+            //var rbdm = requestBody.DeveloperMetadata;
+            //var rbet = requestBody.ETag;
+            //var rbnr = requestBody.NamedRanges;
+            //var rbpr = requestBody.Properties;
+            //var rbsh = requestBody.Sheets;
+            //var rbsid = requestBody.SpreadsheetId;
+            //var rburl = requestBody.SpreadsheetUrl;
+
+
+
+
+
+
+            //newSpreadsheet.Properties.Title = "SpreadsheetsIndex";
+            //newSpreadsheet.Properties.Title = "SpreadsheetsProperties";
+
+            SpreadsheetsResource.CreateRequest request = _service.Spreadsheets.Create(newSpreadsheet);
+
+            // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+            Spreadsheet response = request.Execute();
+            // Data.Spreadsheet response = await request.ExecuteAsync();
+
+            // TODO: Change code below to process the `response` object:
+            return JsonConvert.SerializeObject(response);
+        }
+
+        //public static LiveSpreadsheet GetSpreadsheet(string spreadsheetId)
+        //{
+        //    SpreadsheetsResource.GetRequest request = _service.Spreadsheets.Get(spreadsheetId);
+        //    request.IncludeGridData = true;
+
+        //    // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+        //    Spreadsheet response = request.Execute();
+
+        //    return new LiveSpreadsheet(response);
+        //}
+        #endregion
+
+        #region Sheet
+        public static void AddSheet(string spreadsheetId, string sheetName, int columnCount, int rowCount)
+        {
+            // Add new Sheet
+            //string sheetName = string.Format("{0} {1}", DateTime.Now.Month, DateTime.Now.Day);
+            AddSheetRequest addSheetRequest = new AddSheetRequest();
+            addSheetRequest.Properties = new SheetProperties();
+
+            addSheetRequest.Properties.Title = sheetName;
+            addSheetRequest.Properties.GridProperties = new GridProperties();
+            addSheetRequest.Properties.GridProperties.ColumnCount = columnCount;
+            addSheetRequest.Properties.GridProperties.RowCount = rowCount;
+
+
+
+            BatchUpdateSpreadsheetRequest batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest();
+            batchUpdateSpreadsheetRequest.Requests = new List<Request>();
+            batchUpdateSpreadsheetRequest.Requests.Add(new Request
+            {
+                AddSheet = addSheetRequest
+            });
+
+            var batchUpdateRequest =
+                _service.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, spreadsheetId);
+
+            batchUpdateRequest.Execute();
+        }
+
+        //public static IList<IList<string>> GetSheet(string spreadsheetId, string sheetName)
+        //{
+        //    return GoogleService.GetSheetRange(spreadsheetId, sheetName, 0, 0, null, null);
+        //}
+
+        // column left 0 = A row top 0 = 1
+
+        #endregion
+
+        #region Range CRUD
+        public static IList<IList<string>> GetSheetRange(string spreadsheetId, string sheetName, int columnLeft, int rowTop, int? columnRight = null, int? rowBottom = null)
+        {
+            #region Get response grid
+            // Get string representing range in the format recognizable by GoogleService
+            string rangeString = RangeTranslator.GetRangeString(sheetName, columnLeft, rowTop, columnRight, rowBottom);
+
+            // Define request parameters.
+            SpreadsheetsResource.ValuesResource.GetRequest request =
+                    _service.Spreadsheets.Values.Get(spreadsheetId, rangeString);
+
+            // Prints the names and majors of students in a sample spreadsheet:
+            ValueRange response = request.Execute();
+
+            // Get response grid
+            IList<IList<object>>  responseGrid = response.Values;
+
+            // If range is empty assign empty grid to response value
+            if (response.Values is null) responseGrid = new List<IList<object>>();
+            #endregion
+
+
+            #region Creating empty grid
+            // Get number of rows in response grid
+            int responseRowCount = responseGrid.Count;
+
+            // Get number of columns in response grid
+            int responseColumnCount = 0;
+            if (responseRowCount > 0)
+                responseColumnCount = responseGrid[0].Count;
+
+            IList<IList<string>> grid = null;
+
+            // If range row count is not specified, assure that response row count is matching the requested one.
+            if (rowBottom is null && columnRight is null)
+                grid = GetEmptyGrid(responseColumnCount, responseRowCount);
+
+            else if (rowBottom is null)
+                grid = GetEmptyGrid(columnRight.Value - columnLeft + 1, responseRowCount);
+
+            // If range column count is specified, assure that response column count is matching the requested one.
+            else if (columnRight is null)
+                grid = GetEmptyGrid(responseColumnCount, rowBottom.Value - rowTop + 1);
+
+            // Get empty grid of requested size. Every cell contains "" empty string.
+            else
+                grid = GetEmptyGrid(columnRight.Value - columnLeft + 1, rowBottom.Value - rowTop + 1);
+            #endregion
+
+            #region Fill empty grid with values
+            // If specified range is empty response.Values will be null.
+            if (!(request is null))
+                // For each row
+                for (int r = 0; r < response.Values.Count; r++)
+                    // for each cell in this row
+                    for (int c = 0; c < response.Values[r].Count; c++)
+                        // Assign value coming from the request response
+                        // to the matching cell in the grid of requested size
+                        grid[r][c] = response.Values[r][c].ToString();
+            #endregion
+
+            // Return grid build based on the grid of requested size
+            // filled with values coming form request response.
+            return grid;
+        }
+
+        //public static LiveRange GetRange(string spreadsheetId, string sheetTitleId, int leftIndex, int topeIndex, int rightIndex, int bottomIndex)
+        //{
+        //    //LiveRange range = new LiveRange(spreadsheetId, sheetTitleId, leftIndex, topeIndex, rightIndex, bottomIndex, null);
+
+        //    throw new NotImplementedException();
+        //}
+
+        //// column left 0 = A row top 0 = 1
+        //public static void BatchUpdateRange(LiveRange range)
+        //{
+        //    // How the input data should be interpreted.
+        //    string valueInputOption = "RAW"; //
+
+        //    // The new values to apply to the spreadsheet.
+        //    List<ValueRange> data = new List<ValueRange>();
+        //    ValueRange valueRange = new ValueRange();
+        //    valueRange.Range = range.Range;
+        //    valueRange.Values = range.GetDataAsObjectsGrid();
+        //    data.Add(valueRange);
+
+        //    // TODO: Assign values to desired properties of `requestBody`:
+        //    BatchUpdateValuesRequest requestData = new BatchUpdateValuesRequest();
+        //    requestData.ValueInputOption = valueInputOption;
+        //    requestData.Data = data;
+
+        //    SpreadsheetsResource.ValuesResource.BatchUpdateRequest request = _service.Spreadsheets.Values.BatchUpdate(requestData, range.SpreadsheetId);
+
+        //    // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+        //    BatchUpdateValuesResponse response = request.Execute();
+        //    // Data.BatchUpdateValuesResponse response = await request.ExecuteAsync();
+        //}
+
+        //// column left 0 = A row top 0 = 1
+        //public static void UpdateRange(LiveRange range)
+        //{
+        //    // How the input data should be interpreted.
+        //    SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum valueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW; //
+
+
+        //    // TODO: Assign values to desired properties of `requestBody`. All existing
+        //    // properties will be replaced:
+        //    ValueRange requestBody = new ValueRange();
+        //    requestBody.Range = range.Range;            
+        //    requestBody.Values = range.GetDataAsObjectsGrid();
+            
+        //    SpreadsheetsResource.ValuesResource.UpdateRequest request = GoogleService._service.Spreadsheets.Values.Update(requestBody, range.SpreadsheetId, requestBody.Range);
+        //    request.ValueInputOption = valueInputOption;
+
+        //    // To execute asynchronously in an async method, replace `request.Execute()` as shown:
+        //    UpdateValuesResponse response = request.Execute();
+        //    // Data.UpdateValuesResponse response = await request.ExecuteAsync();
+        //}
+        #endregion
+
+        #region Cell
+        // column left 0 = A row top 0 = 1
+        public static string GetSheetCell(string spreadsheetId, string sheetName, int column, int row)
+        {
+            // Get string representing cell in the format recognizable by GoogleService
+            string rangeString = RangeTranslator.GetCellString(sheetName, column, row);
+
+            // Define request parameters.
+            SpreadsheetsResource.ValuesResource.GetRequest request =
+                    _service.Spreadsheets.Values.Get(spreadsheetId, rangeString);
+
+            // Prints the names and majors of students in a sample spreadsheet:
+            ValueRange response = request.Execute();
+
+            if (response.Values is null) return "";
+
+            return response.Values[0][0].ToString();
+        }
+        
+        // column left 0 = A row top 0 = 1
+        public static void UpdateSheetCell(string value, string spreadsheetId, string sheetName, int column, int row)
+        {
+            string rangeString = RangeTranslator.GetCellString(sheetName, column, row);
+
+            ValueRange valueRange = new ValueRange();
+            valueRange.MajorDimension = "COLUMNS";
+
+            IList<object> oblist = new List<object>() { value };
+            valueRange.Values = new List<IList<object>> { oblist };
+
+            SpreadsheetsResource.ValuesResource.UpdateRequest request = _service.Spreadsheets.Values.Update(valueRange, spreadsheetId, rangeString);
+
+            request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
+            UpdateValuesResponse result = request.Execute();
+        }
+        #endregion
+
+
+
+
+
+
+
+
+
+
+        #region Private Helpers
+        private static void GetService()
+        {
+            UserCredential credential;
+
+            using (var stream =
+                new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+            {
+                // The file token.json stores the user's access and refresh tokens, and is created
+                // automatically when the authorization flow completes for the first time.
+                string credPath = "token.json";
+                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.Load(stream).Secrets,
+                    Scopes,
+                    "user",
+                    CancellationToken.None,
+                    new FileDataStore(credPath, true)).Result;
+                Console.WriteLine("Credential file saved to: " + credPath);
+            }
+
+            // Create Google Sheets API service.
+            _service = new SheetsService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = ApplicationName,
+            });
+        }
+        private static IList<IList<string>> GetEmptyGrid(int columns, int rows)
+        {
+            IList<IList<string>> grid = new List<IList<string>>();
+
+            for (int i = 0; i < rows; i++)
+            {
+                grid.Add(new List<string>());
+                for (int j = 0; j < columns; j++)
+                {
+                    grid[i].Add("");
+                }
+            }
+
+            return grid;
+        }
+
+
+        private static void GetSpreadsheetIndex()
+        {
+            List<IList<string>> spreadsheetsIndex = new List<IList<string>>();
+
+            // Get
+            //GoogleService.GetSheetRange();
+
+
+
+
+
+
+
+
+
+
+
+
+
+            GoogleService._spreadsheets = new SpreadsheetsIndex();
+
+            GoogleService._spreadsheets.GetData();
+        }
+
+        private static bool HasSpreadsheetTitle(string spreadsheetTitleId)
+        {
+            return GoogleService._spreadsheets.TitleIdByUrlId.ContainsKey(spreadsheetTitleId);
+        }
+        #endregion
+    }
+}

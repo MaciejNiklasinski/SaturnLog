@@ -1,0 +1,821 @@
+﻿using Google.Apis.Sheets.v4.Data;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SaturnLog.Google
+{
+    public class LiveRange : IList<LiveRow>
+    {
+        #region Private Fields
+        // All the rows belonging to the sheet ordered from top to bottom.
+        private IList<LiveRow> _rows;
+        #endregion
+        
+        #region Properties
+        // Spreadsheet Id
+        public string SpreadsheetId { get; }
+
+        // Sheet Title Id
+        public string SheetTitleId { get; }
+
+        // 0 based index of the first left column belonging the range.
+        public int LeftIndex { get; }
+
+        // 0 based index of the first top row belonging to the range.
+        public int TopIndex { get; }
+
+        // 0 based index of the last right column belonging the range.
+        public int RightIndex { get { return this.LeftIndex + this.ColumnCount - 1; } }
+
+        // 0 based index of the last bottom row belonging to the range.
+        public int BottomIndex { get { return this.TopIndex + this.RowCount - 1; } }
+
+        // Number of columns in the sheet
+        public int ColumnCount { get; }
+
+        // Number of rows in the sheet
+        public int RowCount { get; }
+
+        // Range string
+        public string Range
+        { get { return RangeTranslator.GetRangeString(this.SheetTitleId, this.LeftIndex, this.TopIndex, this.RightIndex, this.BottomIndex); } }
+        #endregion
+
+        #region Constructors
+        #region Range parameters
+        // Private Base. Not to be use on its own. Data placeholder has to be filled with the sheet rows / cells,
+        // as well as values of the sheet dimensions properties (ColumnCount, RowCount) has to be set.
+        private LiveRange(string spreadsheetId, string sheetTitleId, int leftIndex, int topIndex, int columnCount, int rowCount)
+        {
+            // Assign range spreadsheet id
+            this.SpreadsheetId = spreadsheetId;
+
+            // Assign range sheet title id
+            this.SheetTitleId = sheetTitleId;
+
+            // Assign range location properties.
+            this.LeftIndex = leftIndex;
+            this.TopIndex = topIndex;
+
+            // Assign range dimensions properties.
+            this.ColumnCount = columnCount;
+            this.RowCount = rowCount;
+
+            // Build rows empty placeholder list.
+            this._rows = new List<LiveRow>();
+        }
+               
+        // Parameters and data
+        public LiveRange(string spreadsheetId, string sheetTitleId, int leftIndex, int topIndex, int columnCount, int rowCount, IList<IList<string>> cellsDataGrid)
+            : this(spreadsheetId, sheetTitleId, leftIndex, topIndex, columnCount, rowCount)
+        {
+            // Build empty rows list
+            this.BuildRowsListFromSheetData(cellsDataGrid);
+        }
+
+        // Parameters and data
+        public LiveRange(string spreadsheetId, string sheetTitleId, int leftIndex, int topIndex, int columnCount, int rowCount, IList<IList<object>> cellsDataGrid)
+            : this(spreadsheetId, sheetTitleId, leftIndex, topIndex, columnCount, rowCount)
+        {
+            // Build empty rows list
+            this.BuildRowsListFromSheetData(cellsDataGrid);
+        }
+
+        // Parameters and data
+        public LiveRange(string spreadsheetId, string sheetTitleId, int leftIndex, int topIndex, int columnCount, int rowCount, IList<IList<CellData>> cellsDataGrid)
+            : this(spreadsheetId, sheetTitleId, leftIndex, topIndex, columnCount, rowCount)
+        {
+            // Build empty rows list
+            this.BuildRowsListFromSheetData(cellsDataGrid);
+        }
+
+        // Parameters and data
+        public LiveRange(string spreadsheetId, string sheetTitleId, int leftIndex, int topIndex, int columnCount, int rowCount, IList<RowData> rowsData)
+            : this(spreadsheetId, sheetTitleId, leftIndex, topIndex, columnCount, rowCount)
+        {
+            // Build empty rows list
+            this.BuildRowsListFromSheetData(rowsData);
+        }
+        #endregion
+
+        #region Range string
+        // Private Base. Not to be use on its own. Data placeholder has to be filled with the sheet rows / cells,
+        // as well as values of the sheet dimensions properties (ColumnCount, RowCount) has to be set.
+        private LiveRange(string spreadsheetId, string range)
+        {
+            // Translate range string in to separate parameters.
+            RangeTranslator.RangeStringToParameters(range, out string sheetTitleId, out int leftIndex, out int topIndex, out int columnCount, out int rowCount);
+
+            // Assign range spreadsheet id
+            this.SpreadsheetId = spreadsheetId;
+
+            // Assign range sheet title id
+            this.SheetTitleId = sheetTitleId;
+
+            // Assign range location properties.
+            this.LeftIndex = leftIndex;
+            this.TopIndex = topIndex;
+
+            // Assign range dimensions properties.
+            this.ColumnCount = columnCount;
+            this.RowCount = rowCount;
+
+            // Build rows empty placeholder list.
+            this._rows = new List<LiveRow>();
+        }
+
+        // Parameters and data
+        public LiveRange(string spreadsheetId, string range, IList<IList<string>> cellsDataGrid)
+            : this(spreadsheetId, range)
+        {
+            // Build empty rows list
+            this.BuildRowsListFromSheetData(cellsDataGrid);
+        }
+
+        // Parameters and data
+        public LiveRange(string spreadsheetId, string range, IList<IList<object>> cellsDataGrid)
+            : this(spreadsheetId, range)
+        {
+            // Build empty rows list
+            this.BuildRowsListFromSheetData(cellsDataGrid);
+        }
+
+        // Parameters and data
+        public LiveRange(string spreadsheetId, string range, IList<IList<CellData>> cellsDataGrid)
+            : this(spreadsheetId, range)
+        {
+            // Build empty rows list
+            this.BuildRowsListFromSheetData(cellsDataGrid);
+        }
+
+        // Parameters and data
+        public LiveRange(string spreadsheetId, string range, IList<RowData> rowsData)
+            : this(spreadsheetId, range)
+        {
+            // Build empty rows list
+            this.BuildRowsListFromSheetData(rowsData);
+        }
+        #endregion
+
+        #region Sheet Data
+        // Parameters and content
+        public LiveRange(string spreadsheetId, Sheet sheetData)
+            : this(spreadsheetId, sheetData.Properties.Title, 0, 0, sheetData.Properties.GridProperties.ColumnCount.Value, sheetData.Properties.GridProperties.RowCount.Value)
+        {
+            // Obtain rows data for this sheet if any available.
+            IList<RowData> rowsData = sheetData.Data?.ElementAtOrDefault(0)?.RowData;
+
+            // Build empty rows list based and fill it with the sheet data.
+            this.BuildRowsListFromSheetData(rowsData);
+        }
+        #endregion
+        #endregion
+
+        #region Methods
+        #region GetDataAs
+        // Returns range stored data as a strings grid. Rows / Columns
+        public IList<IList<string>> GetDataAsStringsGrid()
+        {
+            // Create empty instance of the strings grid.
+            List<IList<string>> stringsGrid = new List<IList<string>>();
+
+            // Get data of each row as a list of strings
+            // and add it in to the strings grid.
+            foreach (LiveRow row in this._rows)
+                stringsGrid.Add(row.GetDataAsStrings());
+
+            // Return strings grid.
+            return stringsGrid;
+        }
+
+        // Returns sheet stored data as a objects grid. Rows / Columns
+        public IList<IList<object>> GetDataAsObjectsGrid()
+        {
+            // Create empty instance of the objects grid.
+            List<IList<object>> objectsGrid = new List<IList<object>>();
+
+            // Get data of each row as a list of objects
+            // and add it in to the objects grid.
+            foreach (LiveRow row in this._rows)
+                objectsGrid.Add(row.GetDataAsObjects());
+
+            // Return objects grid.
+            return objectsGrid;
+        }
+
+        // Returns sheet stored data as rows list.
+        public IList<LiveRow> GetDataAsRowsList()
+        {
+            // Create empty instance of the rows list.
+            IList<LiveRow> rowsList = new List<LiveRow>();
+
+            // Get data of each row as a list of strings
+            // and add it in to the strings grid.
+            foreach (LiveRow row in this._rows)
+                rowsList.Add(row);
+
+            // Return rows list.
+            return rowsList;
+        }
+        #endregion
+
+        #region SetDataFrom
+        // Set range data from strings cells grid
+        public void SetDataFromStringsGrid(int leftBufferIndex, int topBufferIndex, IList<IList<string>> cellsGridData, bool ignoreNullData = true)
+        {
+            // Do nothing and return if no data has been provided. Or provided 
+            // cells grid data does not contain data for at least one row.
+            if (cellsGridData == null || cellsGridData.Count < 1) return;
+
+            // Get whichever is lower: Number of the rows in the provided cells grid data,
+            // or the number of the rows in the row minus row top buffer index.
+            int rowsCount = Math.Min(cellsGridData.Count, this.RowCount - topBufferIndex);
+
+            // From 0 to the last row, either on the range or row of provided data.
+            for (int rowIndex = 0; rowIndex < rowsCount; rowIndex++)
+            {
+                // Obtain strings cells data for this specific row if any available in the cells strings grid data.
+                IList<string> cellsData = cellsGridData[rowIndex];
+
+                // Determine index of the row to be filled with the data, by adding 
+                // top buffer index, to the index of the source row in the cells strings grid data.
+                int bufferRelativeRowIndex = topBufferIndex + this.TopIndex + rowIndex;
+
+                // Get row to be filled with the data.
+                LiveRow row = this._rows[bufferRelativeRowIndex];
+
+                // Fill the row with the data.
+                row.SetDataFromStringsList(leftBufferIndex, cellsData, ignoreNullData);
+            }
+        }
+
+        // Set range data from objects grid
+        public void SetDataFromObjectsGrid(int leftBufferIndex, int topBufferIndex, IList<IList<object>> cellsGridData, bool ignoreNullData = true)
+        {
+            // Do nothing and return if no data has been provided. Or provided 
+            // cells grid data does not contain data for at least one row.
+            if (cellsGridData == null || cellsGridData.Count < 1) return;
+
+            // Get whichever is lower: Number of the rows in the provided cells grid data,
+            // or the number of the rows in the range minus row top buffer index.
+            int rowsCount = Math.Min(cellsGridData.Count, this.RowCount - topBufferIndex);
+
+            // From 0 to the last row, either on the range or row of provided data.
+            for (int rowIndex = 0; rowIndex < rowsCount; rowIndex++)
+            {
+                // Obtain objects row data for this specific row if any available in the cells objects grid data.
+                IList<object> cellsData = cellsGridData[rowIndex];
+
+                // Determine index of the row to be filled with the data, by adding 
+                // top buffer index, to the index of the source row in the cells objects grid data.
+                int bufferRelativeRowIndex = topBufferIndex + rowIndex;
+
+                // Get row to be filled with the data.
+                LiveRow row = this._rows[bufferRelativeRowIndex];
+
+                // Fill the row with the data.
+                row.SetDataFromObjectsList(leftBufferIndex, cellsData, ignoreNullData);
+            }
+        }
+
+        // Set range data from objects grid
+        public void SetDataFromCellsGrid(int leftBufferIndex, int topBufferIndex, IList<IList<CellData>> cellsGridData, bool ignoreNullData = true)
+        {
+            // Do nothing and return if no data has been provided. Or provided 
+            // cells grid data does not contain data for at least one row.
+            if (cellsGridData == null || cellsGridData.Count < 1) return;
+
+            // Get whichever is lower: Number of the rows in the provided cells grid data,
+            // or the number of the rows in the range minus row top buffer index.
+            int rowsCount = Math.Min(cellsGridData.Count, this.RowCount - topBufferIndex);
+
+            // From 0 to the last row, either on the range or row of provided data.
+            for (int rowIndex = 0; rowIndex < rowsCount; rowIndex++)
+            {
+                // Obtain objects row data for this specific row if any available in the strings grid data.
+                IList<CellData> cellsData = cellsGridData[rowIndex];
+
+                // Determine index of the row to be filled with the data, by adding 
+                // top buffer index, to the index of the source row in the objects grid data.
+                int bufferRelativeRowIndex = topBufferIndex + rowIndex;
+
+                // Get row to be filled with the data.
+                LiveRow row = this._rows[bufferRelativeRowIndex];
+
+                // Fill the row with the data.
+                row.SetDataFromCellsDataList(leftBufferIndex, cellsData, ignoreNullData);
+            }
+        }
+
+        // Set ramge data from rows list
+        public void SetDataFromRowsDataList(int leftBufferIndex, int topBufferIndex, IList<RowData> rowsData, bool ignoreNullData = true)
+        {
+            // Do nothing and return if no data has been provided. Or provided 
+            // cells grid data does not contain data for at least one row.
+            if (rowsData == null || rowsData.Count < 1) return;
+
+            // Get whichever is lower: Number of the rows in the provided rows data,
+            // or the number of the rows in the range minus row top buffer index.
+            int rowsCount = Math.Min(rowsData.Count, this.RowCount - topBufferIndex);
+
+            // From 0 to the last row, either on the range or row of provided data.
+            for (int rowIndex = 0; rowIndex < rowsCount; rowIndex++)
+            {
+                // Obtain row data for this specific row.
+                RowData rowData = rowsData[rowIndex];
+
+                // Determine index of the row to be filled with the data, by adding 
+                // top buffer index, to the index of the source row in the cells grid data.
+                int bufferRelativeRowIndex = topBufferIndex + rowIndex;
+
+                // Get row to be filled with the data.
+                LiveRow row = this._rows[bufferRelativeRowIndex];
+
+                // Fill the row with the data.
+                row.SetDataFromRowData(leftBufferIndex, rowData, ignoreNullData);
+            }
+        }
+
+        // Set sheet data from the sheet
+        public void SetDataFromSheetData(Sheet sheetData, bool ignoreNullData = true)
+        {
+            // Get sheet data as rows collection if available.
+            IList<RowData> rows = sheetData.Data?.ElementAtOrDefault(0)?.RowData;
+
+            // Set sheet data from rows list, starting from A1 cell.
+            this.SetDataFromRowsDataList(0, 0, rows, ignoreNullData);
+        }
+        #endregion
+        #endregion
+
+        #region Private Helpers
+        // Fill the sheet data placeholder rows list with the number of rows/cells
+        // matching values of the sheet dimensions related properties.
+        private void BuildEmptyRowsListFromDiemensions()
+        {
+            // Create appropriate amount of rows filled with appropriate number of empty cells.
+            // Both number of rows and columns depending on current values of the sheet size related properties.
+            for (int rowIndex = 0; rowIndex < this.RowCount; rowIndex++)
+            {
+                // Determine sheet relative row index.
+                int sheetRelativeRowIndex = this.TopIndex + rowIndex;
+
+                // Create new row with number of columns depending on the number of columns in the range.
+                LiveRow row = new LiveRow(
+                    // Row spreadsheet id.
+                    this.SpreadsheetId, 
+                    // Row sheet title id.
+                    this.SheetTitleId,
+                    // Row first column sheet relative index.
+                    columnIndex: this.LeftIndex, 
+                    // Row sheet relative index.
+                    rowIndex: sheetRelativeRowIndex,
+                    // Row column count.
+                    columnCount: this.ColumnCount);
+
+                // Add newly create row to the sheet rows data.
+                this._rows.Add(row);
+            }
+        }
+
+        // Fill the empty sheet data placeholder rows list with the number of rows/cells
+        // matching required row/cells count. Create each row/cell from corresponding
+        // entry in the provided cells data grid, or create empty row/cell if no
+        // corresponding data can be found.
+        private void BuildRowsListFromSheetData(IList<IList<string>> cellsGridData)
+        {
+            // Create appropriate amount of rows filled with appropriate number of empty cells.
+            // Both number of rows and columns depending on current values of the provided sheet size data.
+            for (int rowIndex = 0; rowIndex < this.RowCount; rowIndex++)
+            {
+                // Get corresponding cells string data. Null will cause creation of an empty cell.
+                IList<string> cellsData = cellsGridData?.ElementAtOrDefault(rowIndex);
+
+                // Determine sheet relative row index.
+                int sheetRelativeRowIndex = this.TopIndex + rowIndex;
+
+                // Create new row with number of columns depending on the number of columns in the range.
+                LiveRow row = new LiveRow(
+                    // Row spreadsheet id.
+                    this.SpreadsheetId,
+                    // Row sheet title id.
+                    this.SheetTitleId,
+                    // Row first column sheet relative index.
+                    columnIndex: this.LeftIndex,
+                    // Row sheet relative index.
+                    rowIndex: sheetRelativeRowIndex, 
+                    // Row column count.
+                    columnCount: this.ColumnCount, 
+                    // Row cells data.
+                    cellsData: cellsData);
+
+                // Add newly create row to the sheet rows data.
+                this._rows.Add(row);
+            }
+        }
+
+        // Fill the empty sheet data placeholder rows list with the number of rows/cells
+        // matching required row/cells count. Create each crow/ell from corresponding
+        // entry in the provided cells data grid, or create empty row/cell if no
+        // corresponding data can be found.
+        private void BuildRowsListFromSheetData(IList<IList<object>> cellsGridData)
+        {
+            // Create appropriate amount of rows filled with appropriate number of empty cells.
+            // Both number of rows and columns depending on current values of the provided sheet size data.
+            for (int rowIndex = 0; rowIndex < this.RowCount; rowIndex++)
+            {
+                // Get corresponding cells object data. Null will cause creation of an empty cell.
+                IList<object> cellsData = cellsGridData?.ElementAtOrDefault(rowIndex);
+
+                // Determine sheet relative row index.
+                int sheetRelativeRowIndex = this.TopIndex + rowIndex;
+
+                // Create new row with number of columns depending on the number of columns in the range.
+                LiveRow row = new LiveRow(
+                    // Row spreadsheet id.
+                    this.SpreadsheetId,
+                    // Row sheet title id.
+                    this.SheetTitleId,
+                    // Row first column sheet relative index.
+                    columnIndex: this.LeftIndex,
+                    // Row sheet relative index.
+                    rowIndex: sheetRelativeRowIndex,
+                    // Row column count.
+                    columnCount: this.ColumnCount,
+                    // Row cells data.
+                    cellsData: cellsData);
+
+                // Add newly create row to the sheet rows data.
+                this._rows.Add(row);
+            }
+        }
+
+        // Fill the empty sheet data placeholder rows list with the number of rows/cells
+        // matching required row/cells count. Create each row/cell from corresponding
+        // entry in the provided cells data grid, or create empty row/cell if no
+        // corresponding data can be found.
+        private void BuildRowsListFromSheetData(IList<IList<CellData>> cellsGridData)
+        {
+            // Create appropriate amount of rows filled with appropriate number of empty cells.
+            // Both number of rows and columns depending on current values of the provided sheet size data.
+            for (int rowIndex = 0; rowIndex < this.RowCount; rowIndex++)
+            {
+                // Get corresponding cells data. Null will cause creation of an empty cell.
+                IList<CellData> cellsData = cellsGridData?.ElementAtOrDefault(rowIndex);
+
+                // Determine sheet relative row index.
+                int sheetRelativeRowIndex = this.TopIndex + rowIndex;
+
+                // Create new row with number of columns depending on the number of columns in the range.
+                LiveRow row = new LiveRow(
+                    // Row spreadsheet id.
+                    this.SpreadsheetId,
+                    // Row sheet title id.
+                    this.SheetTitleId,
+                    // Row first column sheet relative index.
+                    columnIndex: this.LeftIndex,
+                    // Row sheet relative index.
+                    rowIndex: sheetRelativeRowIndex,
+                    // Row column count.
+                    columnCount: this.ColumnCount,
+                    // Row cells data.
+                    cellsData: cellsData);
+
+                // Add newly create row to the sheet rows data.
+                this._rows.Add(row);
+            }
+
+        }
+
+        // Fill the empty sheet data placeholder rows list with the number of rows/cells
+        // matching required row/cells count. Create each row/cell from corresponding
+        // entry in the provided rows data, or create empty row/cell if no
+        // corresponding data can be found.
+        private void BuildRowsListFromSheetData(IList<RowData> rowsData)
+        {
+            // Create appropriate amount of rows filled with appropriate number of empty cells.
+            // Both number of rows and columns depending on current values of the provided sheet size data.
+            for (int rowIndex = 0; rowIndex < this.RowCount; rowIndex++)
+            {
+                // Get corresponding row data. Null will cause creation of an empty cell.
+                RowData rowData = rowsData?.ElementAtOrDefault(rowIndex);
+
+                // Determine sheet relative row index.
+                int sheetRelativeRowIndex = this.TopIndex + rowIndex;
+
+                // Create new row with number of columns depending on the number of columns in the range.
+                LiveRow row = new LiveRow(
+                    // Row spreadsheet id.
+                    this.SpreadsheetId,
+                    // Row sheet title id.
+                    this.SheetTitleId,
+                    // Row first column sheet relative index.
+                    columnIndex: this.LeftIndex,
+                    // Row sheet relative index.
+                    rowIndex: sheetRelativeRowIndex,
+                    // Row column count.
+                    columnCount: this.ColumnCount,
+                    // Row data.
+                    rowData: rowData);
+
+                // Add newly create row to the sheet rows data.
+                this._rows.Add(row);
+            }
+        }
+        #endregion
+
+        #region IList<RowRawData> implementation
+        public int Count => this._rows.Count;
+
+        public bool IsReadOnly => this._rows.IsReadOnly;
+
+        // Range relative index 0 = first row in the range not first in the sheet.
+        public LiveRow this[int index] { get => this._rows[index]; set => this._rows[index] = value; }
+
+        public int IndexOf(LiveRow item)
+        {
+            return this._rows.IndexOf(item);
+        }
+
+        public void Insert(int index, LiveRow item)
+        {
+            this._rows.Insert(index, item);
+        }
+
+        public void RemoveAt(int index)
+        {
+            this._rows.RemoveAt(index);
+        }
+
+        public void Add(LiveRow item)
+        {
+            this._rows.Add(item);
+        }
+
+        public void Clear()
+        {
+            this._rows.Clear();
+        }
+
+        public bool Contains(LiveRow item)
+        {
+            return this._rows.Contains(item);
+        }
+
+        public void CopyTo(LiveRow[] array, int arrayIndex)
+        {
+            this._rows.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(LiveRow item)
+        {
+            return this._rows.Remove(item);
+        }
+
+        public IEnumerator<LiveRow> GetEnumerator()
+        {
+            return this._rows.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this._rows.GetEnumerator();
+        }
+        #endregion
+    }
+
+
+    #region OLD
+    //public class LiveRange : IList<LiveRow>
+    //{
+    //    #region Private Fields
+    //    // All the rows belonging to the sheet ordered from top to bottom.
+    //    private IList<LiveRow> _rows;
+    //    #endregion
+
+    //    #region Properties
+    //    // Spreadsheet Id
+    //    public string SpreadsheetId { get; }
+
+    //    // Sheet Title Id
+    //    public string SheetTitleId { get; }
+
+    //    // 0 based index of the first left column belonging the range.
+    //    public int LeftIndex { get; set; }
+
+    //    // 0 based index of the first top row belonging to the range.
+    //    public int TopIndex { get; set; }
+
+    //    // 0 based index of the last right column belonging the range.
+    //    public int RightIndex { get { return this.LeftIndex + this.ColumnCount - 1; } }
+
+    //    // 0 based index of the last bottom row belonging to the range.
+    //    public int BottomIndex { get { return this.LeftIndex + this.RowCount - 1; } }
+
+    //    // Number of columns in the sheet
+    //    public int ColumnCount { get; }
+
+    //    // Number of rows in the sheet
+    //    public int RowCount { get; }
+
+    //    // Google range string
+    //    public string Range
+    //    { get { return RangeTranslator.GetRangeString(this.SheetTitleId, this.LeftIndex, this.TopIndex, this.RightIndex, this.BottomIndex); } }
+    //    #endregion
+
+    //    #region Constructors
+    //    // Empty from parameters
+    //    public LiveRange(string spreadsheetId, string sheetTitleId, int leftIndex, int topIndex, int rightIndex, int bottomIndex)
+    //    {
+    //        this.SpreadsheetId = spreadsheetId;
+    //        this.SheetTitleId = sheetTitleId;
+
+    //        this.LeftIndex = leftIndex;
+    //        this.TopIndex = topIndex;
+
+    //        this.ColumnCount = rightIndex - leftIndex + 1;
+    //        this.RowCount = bottomIndex -  topIndex + 1;
+
+    //        this._rows = new List<LiveRow>();
+
+    //        for (int rowIndex = 0; rowIndex < this.RowCount; rowIndex++)
+    //            this._rows.Add(new LiveRow(this.SpreadsheetId, this.SheetTitleId, this.LeftIndex, rowIndex, this.ColumnCount));
+    //    }
+
+    //    // Parameters and data
+    //    public LiveRange(string spreadsheetId, string sheetTitleId, int leftIndex, int topIndex, IList<LiveRow> rows)
+    //    {
+    //        this.SpreadsheetId = spreadsheetId;
+    //        this.SheetTitleId = sheetTitleId;
+
+    //        this.LeftIndex = leftIndex;
+    //        this.TopIndex = topIndex;
+
+    //        this.ColumnCount = rows[0].Count;
+    //        this.RowCount = rows.Count;
+
+    //        this._rows = rows;
+    //    }
+
+    //    // Parameters and content
+    //    public LiveRange(string spreadsheetId, Sheet sheet)
+    //    {
+    //        this.SpreadsheetId = spreadsheetId;
+    //        this.SheetTitleId = sheet.Properties.Title;
+    //        this.ColumnCount = sheet.Properties.GridProperties.ColumnCount.Value;
+    //        this.RowCount = sheet.Properties.GridProperties.RowCount.Value;
+
+    //        this._rows = new List<LiveRow>();
+
+    //        int rIndex = 0;
+    //        int cIndex = 0;
+
+    //        for (rIndex = 0; rIndex < RowCount; rIndex++)
+    //        {
+    //            this._rows.Add(new LiveRow(rIndex, ColumnCount));
+
+    //            IList<RowData> rowsData;
+
+    //            try { rowsData = sheet.Data[0].RowData; }
+    //            catch { rowsData = new List<RowData>(); }
+
+    //            RowData rowData = rowsData.ElementAtOrDefault(rIndex);
+    //            if (!(rowData is null) && !(rowData.Values is null))
+    //                foreach (CellData cell in rowData.Values)
+    //                {
+    //                    if (!(cell is null)
+
+    //                        && !(cell.FormattedValue is null))
+    //                    {
+    //                        this._rows[rIndex][cIndex]
+    //                            = new LiveCell(cIndex, cell.FormattedValue);
+    //                    }
+    //                    cIndex++;
+    //                }
+    //            cIndex = 0;
+    //        }
+    //    }
+    //    #endregion
+
+
+    //    //public LiveRange(string spreadsheetId, string sheetTitleId, int leftIndex, int topIndex, int rightIndex, int bottomIndex, IList<RowData> rows)
+    //    //{
+    //    //    this.SheetTitleId = sheetTitleId;
+    //    //    this.SpreadsheetId = spreadsheetId;
+
+    //    //    this.LeftIndex = leftIndex;
+    //    //    this.TopIndex = topIndex;
+
+    //    //    this._columnCount = rightIndex - leftIndex + 1;
+    //    //    this._rowCount = bottomIndex - topIndex + 1;
+
+    //    //    this._rows = new List<LiveRow>();
+
+
+    //    //    int rIndex = 0;
+
+    //    //    foreach (RowData row in rows)
+    //    //    {
+    //    //        IList<LiveCell> cells = new List<LiveCell>();
+
+    //    //        foreach (CellData cellData in row.Values)
+    //    //        {
+
+    //    //        }
+
+    //    //        if (row.Values.Count < this.ColumnCount)
+    //    //        {
+
+    //    //        }
+
+    //    //        this._rows.Add(new LiveRow(rIndex, row.Values));
+
+    //    //        rIndex++;
+    //    //    }
+    //    //}
+    //    public IList<IList<object>> GetDataAsObjectsGrid()
+    //    {
+    //        List<IList<object>> objectsGrid = new List<IList<object>>();
+
+    //        foreach (LiveRow row in this._rows)
+    //            objectsGrid.Add(row.GetDataAsObjects());
+
+    //        return objectsGrid;
+    //    }
+
+    //    public IList<IList<string>> GetDataAsStringsGrid()
+    //    {
+    //        List<IList<string>> stringsGrid = new List<IList<string>>();
+
+    //        foreach (LiveRow row in this._rows)
+    //            stringsGrid.Add(row.GetDataAsStrings());
+
+    //        return stringsGrid;
+    //    }
+
+
+    //    #region IList<RowRawData> implementation
+
+    //    public int Count => this._rows.Count;
+
+    //    public bool IsReadOnly => this._rows.IsReadOnly;
+
+    //    public LiveRow this[int index] { get => this._rows[index]; set => this._rows[index] = value; }
+
+    //    public int IndexOf(LiveRow item)
+    //    {
+    //        return this._rows.IndexOf(item);
+    //    }
+
+    //    public void Insert(int index, LiveRow item)
+    //    {
+    //        this._rows.Insert(index, item);
+    //    }
+
+    //    public void RemoveAt(int index)
+    //    {
+    //        this._rows.RemoveAt(index);
+    //    }
+
+    //    public void Add(LiveRow item)
+    //    {
+    //        this._rows.Add(item);
+    //    }
+
+    //    public void Clear()
+    //    {
+    //        this._rows.Clear();
+    //    }
+
+    //    public bool Contains(LiveRow item)
+    //    {
+    //        return this._rows.Contains(item);
+    //    }
+
+    //    public void CopyTo(LiveRow[] array, int arrayIndex)
+    //    {
+    //        this._rows.CopyTo(array, arrayIndex);
+    //    }
+
+    //    public bool Remove(LiveRow item)
+    //    {
+    //        return this._rows.Remove(item);
+    //    }
+
+    //    public IEnumerator<LiveRow> GetEnumerator()
+    //    {
+    //        return this._rows.GetEnumerator();
+    //    }
+
+    //    IEnumerator IEnumerable.GetEnumerator()
+    //    {
+    //        return this._rows.GetEnumerator();
+    //    }
+    //    #endregion
+    //}
+    #endregion
+}

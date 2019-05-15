@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2C2EB120-31EC-46A8-93EA-F78F28C67107}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LiveGoogle</RootNamespace>
+    <AssemblyName>LiveGoogle</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Google.Apis, Version=1.38.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.38.0\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.38.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.38.0\lib\net45\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.38.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.38.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.38.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.38.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Drive.v3, Version=1.38.0.1477, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Drive.v3.1.38.0.1477\lib\net45\Google.Apis.Drive.v3.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.38.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.38.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Sheets.v4, Version=1.38.0.1479, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Sheets.v4.1.38.0.1479\lib\net45\Google.Apis.Sheets.v4.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Exceptions\ActiveSessionInterruptedByOtherInstanceException.cs" />
+    <Compile Include="Exceptions\ActiveSessionInterruptedByOwnInstanceException.cs" />
+    <Compile Include="Exceptions\OtherInstanceSessionAlreadyActiveException.cs" />
+    <Compile Include="Exceptions\OtherInstanceSessionAlreadyStartingException.cs" />
+    <Compile Include="Exceptions\OwnInstanceSessionIsInactiveOrActivatingException.cs" />
+    <Compile Include="Exceptions\OwnInstanceSessionIsActiveOrActivatingException.cs" />
+    <Compile Include="Exceptions\OwnInstanceSessionIsNotActiveException.cs" />
+    <Compile Include="Exceptions\BatchRequestExecutionUnexpectedException.cs" />
+    <Compile Include="Exceptions\RequestExecutionUnexpectedException.cs" />
+    <Compile Include="Exceptions\SessionActivationInterruptedByOtherInstanceException.cs" />
+    <Compile Include="Exceptions\SessionMaintenanceFailureException.cs" />
+    <Compile Include="Exceptions\SessionMaintenanceIsAlreadyOngoingException.cs" />
+    <Compile Include="Exceptions\SessionActivationInterruptedByOwnInstanceException.cs" />
+    <Compile Include="Extensions\GoogleDataTypesExtensions\CellDataExtensions.cs" />
+    <Compile Include="Extensions\GoogleServicesExtensions\CellsGoogleServicesExtensions.cs" />
+    <Compile Include="Extensions\GoogleServicesExtensions\RowsGoogleServicesExtensions.cs" />
+    <Compile Include="Extensions\GoogleServicesExtensions\RangesGoogleServicesExtensions.cs" />
+    <Compile Include="Factories\GoogleServicesExtensionsRequestsFactory.cs" />
+    <Compile Include="Extensions\GoogleServicesExtensions\SpreadsheetsGoogleServicesExtensions.cs" />
+    <Compile Include="Extensions\GoogleServicesExtensions\SheetsGoogleServicesExtensions.cs" />
+    <None Include="Extensions\SheetsServiceExtensions.OLD_REF_ONLY" />
+    <Compile Include="Extensions\UserTypeExtensions.cs" />
+    <Compile Include="Factories\FactoriesProductionIndexes\LiveRow.LiveRowFactory.FactoryProductionIndex.cs" />
+    <Compile Include="Factories\FactoriesProductionIndexes\LiveRange.LiveRangeFactory.FactoryProductionIndex.cs" />
+    <Compile Include="Factories\LiveRange.LiveRangeFactory.cs" />
+    <Compile Include="Factories\FactoriesProductionIndexes\LiveSpreadsheet.LiveSpreadsheetFactory.FactoryProductionIndex.cs" />
+    <Compile Include="RequestsExecutor.cs" />
+    <Compile Include="SessionRequestsLimiter.cs" />
+    <Compile Include="LiveCell.cs" />
+    <Compile Include="LiveGoogle.cs" />
+    <Compile Include="LiveRange.cs" />
+    <Compile Include="LiveRow.cs" />
+    <Compile Include="Factories\LiveRow.LiveRowFactory.cs" />
+    <Compile Include="LiveSheet.cs" />
+    <Compile Include="LiveSpreadsheet.cs" />
+    <Compile Include="Factories\LiveSpreadsheet.LiveSpreadsheetFactory.cs" />
+    <Compile Include="LiveSpreadsheetsDb.cs" />
+    <Compile Include="Pair.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RangeTranslator.cs" />
+    <Compile Include="Extensions\GoogleDataTypesExtensions\RowDataExtensions.cs" />
+    <Compile Include="Extensions\GoogleDataTypesExtensions\SheetExtensions.cs" />
+    <Compile Include="Extensions\GoogleDataTypesExtensions\SpreadsheetExtensions.cs" />
+    <Compile Include="Session\DataOperator.cs" />
+    <Compile Include="Session\ActivationProfiles\SessionAwaitAllowedTakeoverAnalyzeProfile.cs" />
+    <Compile Include="Session\ActivationProfiles\SessionPreActivationAnalyzeProfile.cs" />
+    <Compile Include="Session\ActivationProfiles\SessionActivationAnalyzeProfile.cs" />
+    <Compile Include="Session\StampsTranslator.cs" />
+    <Compile Include="Session\SessionsRepository.cs" />
+    <Compile Include="Session\SessionStamp.cs" />
+    <Compile Include="Exceptions\OtherInstanceActiveSessionHasBeenDisconnectedException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DateTimeExtensions\DateTimeExtensions.csproj">
+      <Project>{936d9269-674c-4c64-88a0-790a90176a02}</Project>
+      <Name>DateTimeExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SaturnLog.Core\SaturnLog.Core.csproj">
+      <Project>{B6CDBBE1-EB50-4E0F-80F5-414ADD12F1DF}</Project>
+      <Name>SaturnLog.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TaskExtensions\TaskExtensions.csproj">
+      <Project>{14ADE1A6-D83A-46E3-9B0B-B0E09FA33983}</Project>
+      <Name>TaskExtensions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

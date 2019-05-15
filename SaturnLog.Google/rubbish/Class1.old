@@ -1,0 +1,326 @@
+﻿//using Google.Apis.Auth.OAuth2;
+//using Google.Apis.Sheets.v4;
+//using Google.Apis.Sheets.v4.Data;
+//using Google.Apis.Services;
+//using Google.Apis.Util.Store;
+//using System;
+//using System.Collections.Generic;
+//using System.IO;
+//using System.Threading;
+
+//namespace SaturnLog.Google
+//{
+
+
+//    public class Program2
+//    {
+//        public const string SaturnLogID = "16zkzfruZTvqh5-ypKuTlPegST2PuHCVbfL9NfojTOE0";
+
+
+//        private static SheetsService _service;
+
+
+
+//        // If modifying these scopes, delete your previously saved credentials
+//        // at ~/.credentials/sheets.googleapis.com-dotnet-quickstart.json
+//        static string[] Scopes = { SheetsService.Scope.Drive };
+//        static string ApplicationName = "SaturnLog";
+
+//        public static void Main()
+//        {
+//            GetService();
+
+//            string sheetName = $"{DateTime.Now.Year}_{DateTime.Now.GetIso8601WeekOfYear()}";
+
+//            //AddSheet(SaturnLogID, sheetName, 500, 20);
+
+//            IList<IList<string>> grid = new List<IList<string>>();
+//            for (int i = 0; i < 20; i++)
+//            {
+//                grid.Add(new List<string>());
+//                for (int j = 0; j < 6; j++)
+//                    grid[i].Add("");
+//            }
+//            grid[0][0] = "Should be A1";
+//            grid[1][0] = "Should be A2";
+//            grid[2][0] = "Should be A3";
+//            grid[3][0] = "Should be A4";
+//            grid[4][0] = "Should be A5";
+//            grid[5][0] = "Should be A6";
+//            grid[6][0] = "Should be A7";
+//            grid[7][0] = "Should be A8";
+
+
+//            grid[0][1] = "Should be B1";
+//            grid[1][1] = "Should be B2";
+//            grid[2][1] = "Should be B3";
+//            grid[3][1] = "Should be B4";
+//            grid[4][1] = "Should be B5";
+//            grid[5][1] = "Should be B6";
+//            grid[6][1] = "Should be B7";
+//            grid[7][1] = "Should be B8";
+
+
+
+//            grid[1][2] = "test input 1";
+//            grid[1][3] = "test input 2";
+//            grid[4][1] = "test input afs";
+
+
+//            //UpdateSheetRange(grid, SaturnLogID, sheetName, 0, 0, 6, 20);
+//            for (int i = 0; i < 21; i++)
+//            {
+//                //UpdateSheetCell($"0-{i + 3}", SaturnLogID, sheetName, 0, i);
+//            }
+
+
+//            string cellValue = GetSheetCell(SaturnLogID, sheetName,  0, 10);
+
+
+
+
+
+
+//            //// Define request parameters.
+//            //String spreadsheetId = "16zkzfruZTvqh5-ypKuTlPegST2PuHCVbfL9NfojTOE0";
+//            //String range = "Class Data!A2:E";
+//            //SpreadsheetsResource.ValuesResource.GetRequest request =
+//            //        _service.Spreadsheets.Values.Get(spreadsheetId, range);
+
+
+
+
+//            //// Prints the names and majors of students in a sample spreadsheet:
+//            //// https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+//            //ValueRange response = request.Execute();
+//            //IList<IList<object>> values = response.Values;
+
+//            Sheet sheet = GetSheetRange(SaturnLogID, sheetName, 0, 0, 4, 5);
+            
+//            if (sheet != null && sheet.Grid.Count > 0)
+//            {
+//                Console.WriteLine("Name, Major");
+//                foreach (var row in sheet.Grid)
+//                {
+//                    // Print columns A and E, which correspond to indices 0 and 4.
+//                    Console.WriteLine("{0}, {1}", row[0], row[1]);
+//                }
+//            }
+//            else
+//            {
+//                Console.WriteLine("No data found.");
+//            }
+//            Console.Read();
+//        }
+
+
+//        private static void GetService()
+//        {
+//            UserCredential credential;
+
+//            using (var stream =
+//                new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+//            {
+//                // The file token.json stores the user's access and refresh tokens, and is created
+//                // automatically when the authorization flow completes for the first time.
+//                string credPath = "token.json";
+//                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+//                    GoogleClientSecrets.Load(stream).Secrets,
+//                    Scopes,
+//                    "user",
+//                    CancellationToken.None,
+//                    new FileDataStore(credPath, true)).Result;
+//                Console.WriteLine("Credential file saved to: " + credPath);
+//            }
+
+//            // Create Google Sheets API service.
+//            _service = new SheetsService(new BaseClientService.Initializer()
+//            {
+//                HttpClientInitializer = credential,
+//                ApplicationName = ApplicationName,
+//            });
+//        }
+
+//        private static void AddSheet(string spreadsheetId, string sheetName, int columnCount, int rowCount)
+//        {
+//            // Add new Sheet
+//            //string sheetName = string.Format("{0} {1}", DateTime.Now.Month, DateTime.Now.Day);
+//            AddSheetRequest addSheetRequest = new AddSheetRequest();
+//            addSheetRequest.Properties = new SheetProperties();
+
+//            addSheetRequest.Properties.Title = sheetName;
+//            addSheetRequest.Properties.GridProperties = new GridProperties();
+//            addSheetRequest.Properties.GridProperties.ColumnCount = columnCount;
+//            addSheetRequest.Properties.GridProperties.RowCount = rowCount;
+
+
+
+//            BatchUpdateSpreadsheetRequest batchUpdateSpreadsheetRequest = new BatchUpdateSpreadsheetRequest();
+//            batchUpdateSpreadsheetRequest.Requests = new List<Request>();
+//            batchUpdateSpreadsheetRequest.Requests.Add(new Request
+//            {
+//                AddSheet = addSheetRequest
+//            });
+
+//            var batchUpdateRequest =
+//                _service.Spreadsheets.BatchUpdate(batchUpdateSpreadsheetRequest, spreadsheetId);
+
+//            batchUpdateRequest.Execute();
+//        }
+
+//        // column left 0 = A row top 0 = 1
+//        private static Sheet GetSheetRange(string spreadsheetId, string sheetName, int columnLeft, int rowTop, int columnRight, int rowBottom)
+//        {
+//            List<IList<string>> grid = new List<IList<string>>();
+//            for (int i = 0; i <= rowBottom && i >= rowTop; i++)
+//            {
+//                grid.Add(new List<string>(columnRight - columnLeft + 1));
+//                for (int j = 0; j <= columnRight && j >= columnLeft; j++)
+//                {
+//                    grid[i].Add("");
+//                }
+//            }
+
+
+
+
+
+
+
+
+
+//            string rangeString = RangeTranslator.GetRangeString(sheetName, columnLeft, rowTop, columnRight, rowBottom);
+
+//            // Define request parameters.
+//            SpreadsheetsResource.ValuesResource.GetRequest request =
+//                    _service.Spreadsheets.Values.Get(spreadsheetId, rangeString);
+
+//            // Prints the names and majors of students in a sample spreadsheet:
+//            // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+//            ValueRange response = request.Execute();
+//            IList<IList<object>> responseGrid = response.Values;
+
+
+
+
+
+
+
+
+
+
+//            int r = 0;
+//            int c = 0;
+
+//            foreach (IList<object> responseRow in responseGrid)
+//            {
+//                foreach (object responseColumn in responseRow)
+//                {
+//                    if (!(responseColumn is null))
+//                        grid[r][c] = responseColumn.ToString();
+//                    c++;
+//                }
+//                c = 0;
+//                r++;
+//            }
+
+            
+//            return new Sheet(grid);
+//        }
+
+//        // column left 0 = A row top 0 = 1
+//        private static string GetSheetCell(string spreadsheetId, string sheetName, int column, int row)
+//        {
+//            string rangeString = RangeTranslator.GetCellString(sheetName, column, row);
+
+//            // Define request parameters.
+//            SpreadsheetsResource.ValuesResource.GetRequest request =
+//                    _service.Spreadsheets.Values.Get(spreadsheetId, rangeString);
+
+//            // Prints the names and majors of students in a sample spreadsheet:
+//            // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+//            ValueRange response = request.Execute();
+
+//            if (response.Values is null) return "";
+
+//            return response.Values[0][0].ToString();
+//        }
+
+//        // column left 0 = A row top 0 = 1
+//        private static void UpdateSheetCell(string value, string spreadsheetId, string sheetName, int column, int row)
+//        {
+
+//            string rangeString = RangeTranslator.GetCellString(sheetName, column, row);
+
+//            ValueRange valueRange = new ValueRange();
+//            valueRange.MajorDimension = "COLUMNS";
+
+//            IList<object> oblist = new List<object>() { value };
+//            valueRange.Values = new List<IList<object>> { oblist };
+
+//            SpreadsheetsResource.ValuesResource.UpdateRequest request = _service.Spreadsheets.Values.Update(valueRange, spreadsheetId, rangeString);
+
+//            request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
+//            UpdateValuesResponse result = request.Execute();
+//        }
+
+
+
+
+
+
+
+
+
+
+//        //private static void UpdateSheetRange(IList<IList<string>> values, string spreadsheetId, string sheetName, int columnLeft, int rowTop, int columnRight, int rowBottom)
+//        //{
+//        //    List<IList<object>> grid = new List<IList<object>>();
+//        //    for (int i = 0; i <= rowBottom && i >= rowTop; i++)
+//        //    {
+//        //        grid.Add(new List<object>(columnRight - columnLeft));
+//        //        for (int j = 0; j <= columnRight && j >= columnLeft; j++)
+//        //        {
+//        //            grid[i].Add(null);
+//        //        }
+//        //    }
+
+//        //    int r = 0;
+//        //    int c = 0;
+
+//        //    foreach (IList<string> valuesRow in values)
+//        //    {
+//        //        foreach (string valuesColumn in valuesRow)
+//        //        {
+//        //            if (valuesColumn != "")
+//        //                grid[r][c] = values[r][c];
+//        //            c++;
+//        //        }
+//        //        c = 0;
+//        //        r++;
+//        //    }
+
+
+
+
+
+
+
+
+
+//        //    string rangeString = sheetName + "!" + RangeTranslator.GetRangeString(columnLeft, rowTop, columnRight, rowBottom);
+
+//        //    SpreadsheetsResource.ValuesResource.AppendRequest request =
+//        //       _service.Spreadsheets.Values.Append(new ValueRange() { Values = grid }, spreadsheetId, rangeString);
+//        //    //request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.OVERWRITE;
+//        //    request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.RAW;
+//        //    var response = request.Execute();
+//        //}
+
+
+//        //private static string GetSheetRange(string spreadsheetId)
+//        //{
+
+//        //}
+//    }
+//}
