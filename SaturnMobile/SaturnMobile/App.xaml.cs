@@ -14,7 +14,7 @@ namespace SaturnMobile
             InitializeComponent();
 
             DependencyService.Register<MockDataStore>();
-            MainPage = new MainPage();
+            MainPage = new Shell();
         }
 
         protected override void OnStart()
