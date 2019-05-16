@@ -84,6 +84,9 @@ namespace SaturnLog.Core
         // Connect into the database.
         public async Task<Task> ConnectAsync(CancellationTokenSource cancellationTokenSource, bool forceDBTakeover)
         {
+            // Await till any ongoing connect/disconnect action will be completed before proceeding.
+            while (this.DBConnected is null) { await Task.Delay(100); }
+
             // Listen for db errors task
             Task listenDBErrorsTask;
 
@@ -103,6 +106,7 @@ namespace SaturnLog.Core
                     .GetConstructor(Type.EmptyTypes)
                     .Invoke(new object[0]) as IDataRepository;
 
+                // Attempt to connect with database and await listenDBErrors task to be returned by it.
                 listenDBErrorsTask = await this._dataRepository.ConnectAsync(cancellationTokenSource, forceDBTakeover);
 
                 // Set DBConnected flag to true, to indicating the database is currently connected.
@@ -202,9 +206,9 @@ namespace SaturnLog.Core
             }
             // If database lock failed because DB is already disconnected, exception can be simply ignored as locking DBContent is not necessary. (Remember to ignore releasing semaphore as well in this case).
             catch (DBNotConnectedException) { }
-            // If database lock failed because DB has been recently forced to get disconnected, and its currently awaiting all the ongoing data commits to be completed, prior to disconnecting and disposing itself.
-            // Await till database gonna get disconnected and simply ignore error after that. (Remember to ignore releasing semaphore as well in this case).
-            catch (DBForcedToBeTakenOverException) { do { await Task.Delay(100); } while(this.DBConnected != false);  }
+            // If database lock failed because DB has been recently forced to get disconnected, and its currently awaiting all the ongoing data commits to be completed, prior to disconnecting and disposing itself, 
+            // exception can be simply ignored as locking DBContent is not necessary for log out action. (Remember to ignore releasing semaphore as well in this case).
+            catch (DBForcedToBeTakenOverException) { }
 
             try
             {
@@ -223,12 +227,8 @@ namespace SaturnLog.Core
                     this.LoggedUserType = null;
                 });
             }
-            // Finally release the database semaphore id it has been successfully locked.
-            finally
-            {
-                if (succesfullyLocked)
-                    this._dataRepository.ReleaseDBContent();
-            }
+            // Finally release the database semaphore if it has been successfully locked.
+            finally { if (succesfullyLocked) this._dataRepository.ReleaseDBContent(); }
         }
         #endregion
 
@@ -241,33 +241,51 @@ namespace SaturnLog.Core
                 try { await listenDBErrorsTask; }
                 catch (DBConnectionFailureException) // When DB active connection failed.
                 {
-                    // Await data repository to disposal.
-                    await DisposeDataRepositoryAsync();
+                    // Set DBConnected flag to null to indicate ongoing disconnect.
+                    this.DBConnected = null;
 
-                    // Set DBConnected flag to 
-                    this.DBConnected = false;
+                    // DO NOT AWAIT
+                    Task.Run(async () => 
+                    {
+                        // Await data repository to disposal.
+                        await DisposeDataRepositoryAsync();
+
+                        // Set DBConnected flag to 
+                        this.DBConnected = false;
+                    });
 
                     // Proceed up the stack
                     throw;
                 }
                 catch (DBForcedToBeTakenOverException) // When DB has been forced to disconnect
                 {
-                    // If logged in... log out.
-                    if (this.LoggedIn) await this.LogOutAsync();
+                    // Set DBConnected flag to null to indicate ongoing disconnect.
+                    this.DBConnected = null;
 
-                    // Await data repository to disposal.
-                    await DisposeDataRepositoryAsync();
+                    // DO NOT AWAIT
+                    Task.Run(async () =>
+                    {
+                        // If logged in... log out.
+                        if (this.LoggedIn) await this.LogOutAsync();
 
-                    // Set DBConnected flag to 
-                    this.DBConnected = false;
+                        // Await data repository to disposal.
+                        await DisposeDataRepositoryAsync();
+
+                        // Set DBConnected flag to 
+                        this.DBConnected = false;
+                    });
 
                     // Proceed up the stack
                     throw;
                 }
                 catch (DBDisconnectedException) // When DB willfully disconnected. (Catch and Swallow.)
                 {
+                    // Set DBConnected flag to null to indicate ongoing disconnect.
+                    this.DBConnected = null;
+
                     // Await data repository to disposal.
                     await DisposeDataRepositoryAsync();
+
                     // Set DBConnected flag to 
                     this.DBConnected = false;
                 }

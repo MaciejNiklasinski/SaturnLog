@@ -351,12 +351,6 @@ namespace SaturnLog.UI
                 rtbLogs.AppendText("Application has been forced to disconnect from database. This has been enforced by other instance of the application to allow it connect into the database itself.", _failureColor);
             }
 
-            public static void AddDatabaseForcedToLogOutLog(RichTextBox rtbLogs)
-            {
-                rtbLogsServices.AppendTimestamp(rtbLogs);
-                rtbLogs.AppendText("Application has been forced to log out current user. This has been enforced by other instance of the application to allow it connect into the database itself.", _failureColor);
-            }
-
             public static void AddDatabaseOngoingDataFetchLog(RichTextBox rtbLogs)
             {
                 rtbLogsServices.AppendTimestamp(rtbLogs);

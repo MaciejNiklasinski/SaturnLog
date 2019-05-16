@@ -160,7 +160,7 @@ namespace SaturnLog.UI
                 this._consolesServices.OnConnect_Failed(sender, e);
 
                 // Ask user what to do in case of failure
-                DialogResult result = MessageBox.Show($"Database is currently in use by somebody else or an application has been closed incorrectly/crashed recently. Would you like to force database connection anyway, and disconnect any other active database connection?", "Database is currently in use.", MessageBoxButtons.YesNo);
+                DialogResult result = MessageBox.Show($"Database is currently in use by somebody else or the application has been closed incorrectly/crashed recently. Would you like to force database connection anyway, and disconnect any other active database connection?", "Database is currently in use.", MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 // If user pressed 'Yes' button, reattempt to connect with database. 
                 {
@@ -227,20 +227,13 @@ namespace SaturnLog.UI
                         this.OnConnectionFailed(sender, new ExceptionEventArgs<DBConnectionFailureException>(connectionFailureEx));
                     }
 
-                    // If forced to log out and disconnect..
-                    else if (this._app.LoggedIn && connectTaskExceptions.Any((ex) => { return (ex.GetType() == typeof(DBForcedToBeTakenOverException)); }))
-                    {
-                        this.OnForcedToLogOut(sender, e);
-                        this.OnForcedToDisconnect(sender, e);
-                    }
-
-                    // If forced to disconnect..
+                    // If forced to  disconnect..
                     else if (connectTaskExceptions.Any((ex) => { return (ex.GetType() == typeof(DBForcedToBeTakenOverException)); }))
                         this.OnForcedToDisconnect(sender, e);
 
                     // If disconnected willingly..
                     else if (connectTaskExceptions.Any((ex) => { return (ex.GetType() == typeof(DBDisconnectedException)); }))
-                        ; // Do Nothing - should not occure anyway // this.OnConnectionFailed(sender, e);
+                        ; // Do Nothing - should not occur anyway // this.OnConnectionFailed(sender, e);
 
                     // Any other exception...
                     else this.OnConnectionFailed(sender, new ExceptionsEventArgs(connectTaskExceptions));
@@ -307,16 +300,7 @@ namespace SaturnLog.UI
                 // Otherwise close the application. 
                 this._form.Close();
             }
-            
-            // Occurs whenever application has been forced to log out.
-            private void OnForcedToLogOut(object sender, System.EventArgs e)
-            {
-                // Enable control appropriate when application is disconnected from database, and user is logged out.
-                this._controlsEnabler.OnConnect_ForcedToLogOut(sender, e);
 
-                // Set all the consoles according is disconnected.
-                this._consolesServices.OnConnect_ForcedToLogOut(sender, e);
-            }
             // Occurs whenever database has been forced to disconnect.
             private void OnForcedToDisconnect(object sender, System.EventArgs e)
             {

@@ -2137,28 +2137,6 @@ namespace SaturnLog.UI
                 }
             }
 
-            public void OnConnect_ForcedToLogOut(object sender, EventArgs e)
-            {
-                if (this._form.InvokeRequired)
-                {
-                    Action<object, EventArgs> d = new Action<object, EventArgs>(OnConnect_ForcedToLogOut);
-                    if (!this._form.IsDisposed)
-                        this._form.Invoke(d, sender, e);
-                }
-                else if (!this._form.IsDisposed)
-                {
-                    // Tabs
-                    this.DisableAllButOptionsTab();
-
-                    // Buttons
-                    this.DisableButtons_NotConnectedLoggedOut();
-                    this.DisableCancelButton();
-
-                    // Text Boxes
-                    this.DisableAllInputTextBoxes();
-                }
-            }
-
             public void OnConnect_ForcedToDisconnect(object sender, EventArgs e)
             {
                 if (this._form.InvokeRequired)

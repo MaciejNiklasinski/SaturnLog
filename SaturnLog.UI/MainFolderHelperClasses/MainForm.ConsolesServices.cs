@@ -2612,26 +2612,10 @@ namespace SaturnLog.UI
                 }
                 else if (!this._form.IsDisposed)
                 {
+                    rtbLoggedUserServices.ShowForcedToLogOut(this.rtbLoggedUser);
                     rtbDBStatusServices.ShowDatabaseForcedToDisconnectFailure(this.rtbDBStatus);
                     rtbLogsServices.AddDatabaseForcedToDisconnectLog(this.rtbLogs);
                     rtbCurrentlyServices.ShowAwaitingToConnectToDatabase(this.rtbCurrently);
-                    rtbDoNowServices.Clear(this.rtbDoNow);
-                }
-            }
-
-            public void OnConnect_ForcedToLogOut(object sender, EventArgs e)
-            {
-                if (this._form.InvokeRequired)
-                {
-                    Action<object, EventArgs> d = new Action<object, EventArgs>(OnConnect_ForcedToLogOut);
-                    if (!this._form.IsDisposed)
-                        this._form.Invoke(d, sender, e);
-                }
-                else if (!this._form.IsDisposed)
-                {
-                    rtbLoggedUserServices.ShowForcedToLogOut(this.rtbLoggedUser);
-                    rtbLogsServices.AddDatabaseForcedToLogOutLog(this.rtbLogs);
-                    rtbCurrentlyServices.ShowAwaitingToLogIn(this.rtbCurrently);
                     rtbDoNowServices.Clear(this.rtbDoNow);
                 }
             }
