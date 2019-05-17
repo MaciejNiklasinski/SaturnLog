@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:local="clr-namespace:Gastropod"
              Title="Gastropods"
-             x:Class="SaturnMobile.Views.MainPage">
+             x:Class="SaturnMobile.Views.MainPage"
+             Visual="Material">
     
     <Shell.TitleView>
         <ContentView>
@@ -19,6 +20,6 @@
         AlignItems="Center"
         JustifyContent="Center"
         Direction="Column">
-        <Label Text="Home Page" />
+        <Label Text="Things go here" />
     </FlexLayout>
 </ContentPage>

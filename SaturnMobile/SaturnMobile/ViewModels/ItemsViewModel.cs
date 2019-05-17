@@ -38,11 +38,11 @@ namespace SaturnMobile.ViewModels
 
             try
             {
-                Items.Clear();
+                this.Items.Clear();
                 var items = await DataStore.GetItemsAsync(true);
                 foreach (var item in items)
                 {
-                    Items.Add(item);
+                    this.Items.Add(item);
                 }
             }
             catch (Exception ex)

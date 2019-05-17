@@ -16,8 +16,38 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Images\saturn.jpg" />
+    <None Remove="Images\DPD logo to download_files\4ac1816b6a3f6adbcc7763cd11ba292a_1553176778.js" />
+    <None Remove="Images\DPD logo to download_files\ga.js" />
+    <None Remove="Images\DPD logo to download_files\close_btn.png" />
+    <None Remove="Images\DPD logo to download_files\dpd_logo_redgrad_rgb.png" />
+    <None Remove="Images\DPD logo to download_files\print.png" />
+    <None Remove="Images\DPD logo to download_files\logo_group.jpg" />
+    <None Remove="Images\DPD logo to download_files\sm_youtube_29x29_smallSocialMediaIcon.png" />
+    <None Remove="Images\DPD logo to download_files\jwplayer.js" />
+    <None Remove="Images\DPD logo to download_files\gtm.js" />
+    <None Remove="Images\DPD logo to download_files\sm_linkedin_29x29_smallSocialMediaIcon.png" />
+    <None Remove="Images\DPD logo to download_files\lightbox-ico-loading.gif" />
+    <None Remove="Images\DPD logo to download_files\shariff.complete.js" />
+    <None Remove="Images\DPD logo to download_files\sm_facebook_29x29_smallSocialMediaIcon.png" />
+    <None Remove="Images\DPD logo to download_files\download.png" />
+    <None Remove="Images\DPD logo to download_files\a498b3d9e8d46cc9fd9eed2287a8eaf9_1553176777.js" />
+    <None Remove="Images\DPD logo to download.htm" />
+    <None Remove="Images\DPD_logo_menu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Views\ItemDetailPage.xaml" />
+    <EmbeddedResource Remove="Views\ItemsPage.xaml" />
+    <EmbeddedResource Remove="Images\DPD logo to download_files\print.css" />
+    <EmbeddedResource Remove="Images\DPD logo to download_files\dbb5856c1441f5756ad5884f6737c681_1553176778_all.css" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\saturn.jpg" />
+    <EmbeddedResource Include="Images\DPD_logo_menu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="ViewModels\ItemDetailViewModel.cs" />
+    <Compile Remove="ViewModels\ItemsViewModel.cs" />
+    <Compile Remove="Views\ItemDetailPage.xaml.cs" />
+    <Compile Remove="Views\ItemsPage.xaml.cs" />
   </ItemGroup>
 </Project>

@@ -5,17 +5,11 @@ using Xamarin.Forms.Xaml;
 
 namespace SaturnMobile.Views
 {
-    public partial class MainPage : ContentPage
+    public partial class ReportsPage : ContentPage
     {
-        public MainPage()
+        public ReportsPage()
         {
             InitializeComponent();
         }
-
-        public void Meee()
-        {
-
-        }
-
     }
 }

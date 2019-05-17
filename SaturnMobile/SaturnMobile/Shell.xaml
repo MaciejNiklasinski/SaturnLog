@@ -11,19 +11,22 @@
        x:Class="SaturnMobile.Shell">
     
     <Shell.FlyoutHeader>
-        <Grid HeightRequest="300">
-            <Image Source="{local:ImageResource SaturnMobile.Images.saturn.jpg}"
+        <Grid HeightRequest="200">
+            <Image Source="{local:ImageResource SaturnMobile.Images.DPD_logo_menu.png}"
                    Aspect="AspectFill" 
                    HeightRequest="300" 
-                   HorizontalOptions="FillAndExpand"/>
-            <Label Text="Saturn" TextColor="White" FontSize="48" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                   HorizontalOptions="FillAndExpand"
+                   BackgroundColor="LightGray"/>
+            <Label Text="Saturn Log" TextColor="White" FontSize="48" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
         </Grid>
     </Shell.FlyoutHeader>
     
     <FlyoutItem Route="home" Title="Home Page" >
         <ShellContent Route="home" Title="Home" ContentTemplate="{DataTemplate local:Views.MainPage}" />
     </FlyoutItem>
-    
+    <FlyoutItem Route="reports" Title="Reports Page" >
+        <ShellContent Route="reports" Title="Reports" ContentTemplate="{DataTemplate local:Views.ReportsPage}" />
+    </FlyoutItem>
     <FlyoutItem Route="about" Title="About Page" >
         <ShellContent Route="home" Title="About" ContentTemplate="{DataTemplate local:Views.AboutPage}" />
     </FlyoutItem>
