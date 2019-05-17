@@ -787,8 +787,7 @@ namespace LiveGoogle.Factories
         #region Delete
         #endregion
         #endregion
-
-
+        
         #region Cell
         #region Create
         #endregion
