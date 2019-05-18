@@ -12,9 +12,9 @@ namespace SaturnMobile.Views
             InitializeComponent();
         }
 
-        public void Meee()
+        void Handle_Clicked(object sender, System.EventArgs e)
         {
-
+            Shell.Current.SendBackButtonPressed();
         }
 
     }

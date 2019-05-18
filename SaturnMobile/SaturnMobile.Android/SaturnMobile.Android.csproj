@@ -90,6 +90,8 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
     <AndroidResource Include="Resources\drawable\xamarin_logo.png" />
     <AndroidResource Include="Resources\drawable\dpd_logo.png" />
+    <AndroidResource Include="Resources\mipmap-hdpi\DPD_logo_menu.png" />
+    <AndroidResource Include="Resources\drawable\gear.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable-hdpi\" />

@@ -5,9 +5,9 @@ using Xamarin.Forms.Xaml;
 
 namespace SaturnMobile.Views
 {
-    public partial class ReportsPage : ContentPage
+    public partial class UserReportPage : ContentPage
     {
-        public ReportsPage()
+        public UserReportPage()
         {
             InitializeComponent();
         }

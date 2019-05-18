@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             x:Class="SaturnMobile.Views.ReportsPage" 
+             x:Class="SaturnMobile.Views.DamageReportPage" 
              xmlns:vm="clr-namespace:SaturnMobile.ViewModels" 
-             Title="Reports"
+             Title="Damage Report"
              Visual="Material">
     <ContentPage.BindingContext>
-        <vm:AboutViewModel />
+        <vm:UserReportViewModel />
     </ContentPage.BindingContext>
     <ContentPage.Resources>
         <ResourceDictionary>

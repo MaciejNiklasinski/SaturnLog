@@ -50,4 +50,14 @@
     <Compile Remove="Views\ItemDetailPage.xaml.cs" />
     <Compile Remove="Views\ItemsPage.xaml.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Services\" />
+    <Folder Include="Styles\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Views\FaultReportPage.xaml.cs">
+      <DependentUpon>FaultReportPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

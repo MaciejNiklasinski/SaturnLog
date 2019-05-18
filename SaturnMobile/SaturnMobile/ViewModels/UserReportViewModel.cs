@@ -5,9 +5,9 @@ using Xamarin.Forms;
 
 namespace SaturnMobile.ViewModels
 {
-    public class ReportsViewModel : BaseViewModel
+    public class UserReportViewModel : BaseViewModel
     {
-        public ReportsViewModel()
+        public UserReportViewModel()
         {
            
         }
