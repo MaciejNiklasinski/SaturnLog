@@ -10,6 +10,7 @@ namespace SaturnMobile.Views
         public AboutPage()
         {
             InitializeComponent();
+            BindingContext = new ViewModels.AboutViewModel();
         }
     }
 }
