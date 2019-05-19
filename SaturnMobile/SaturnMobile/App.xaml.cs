@@ -1,8 +1,4 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using SaturnMobile.Services;
-using SaturnMobile.Views;
+﻿using Xamarin.Forms;
 
 namespace SaturnMobile
 {
@@ -13,7 +9,6 @@ namespace SaturnMobile
         {
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
             MainPage = new Shell();
         }
 

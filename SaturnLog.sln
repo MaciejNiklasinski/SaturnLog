@@ -27,6 +27,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaturnMobile", "SaturnMobil
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SaturnMobile", "SaturnMobile", "{EADE5231-E2CF-4519-977D-9AB47ECE6285}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AF1CA55C-984F-480D-8451-2BFBDFECFC6C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

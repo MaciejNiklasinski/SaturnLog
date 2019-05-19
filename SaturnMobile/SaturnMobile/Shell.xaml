@@ -11,20 +11,31 @@
        x:Class="SaturnMobile.Shell">
     
     <Shell.FlyoutHeader>
-        <Grid HeightRequest="300">
-            <Image Source="{local:ImageResource SaturnMobile.Images.saturn.jpg}"
+        <Grid HeightRequest="200">
+            <Image Source="{local:ImageResource SaturnMobile.Images.DPD_logo_menu.png}"
                    Aspect="AspectFill" 
                    HeightRequest="300" 
-                   HorizontalOptions="FillAndExpand"/>
-            <Label Text="Saturn" TextColor="White" FontSize="48" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                   HorizontalOptions="FillAndExpand"
+                   BackgroundColor="LightGray"/>
+            <Label Text="Saturn Log" TextColor="White" FontSize="48" HorizontalOptions="Center" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
         </Grid>
     </Shell.FlyoutHeader>
     
-    <FlyoutItem Route="home" Title="Home Page" >
-        <ShellContent Route="home" Title="Home" ContentTemplate="{DataTemplate local:Views.MainPage}" />
+    <FlyoutItem Route="home" Title="Home" Style="{StaticResource BaseStyle}">
+        <ShellContent Route="home" Title="Login" ContentTemplate="{DataTemplate local:Views.MainPage}" />
     </FlyoutItem>
-    
-    <FlyoutItem Route="about" Title="About Page" >
+    <FlyoutItem Route="reports" Title="Reports" Style="{StaticResource BaseStyle}">
+        <Tab Route="user_report" Title="User Report" Icon="gear.png">
+            <ShellContent ContentTemplate="{DataTemplate local:Views.UserReportPage}" />
+        </Tab>
+        <Tab Route="damage_report" Title="Damage Report" Icon="gear.png" >
+            <ShellContent ContentTemplate="{DataTemplate local:Views.DamageReportPage}" />
+        </Tab>
+        <Tab Route="fault_report" Title="Fault Report" Icon="gear.png" >
+            <ShellContent ContentTemplate="{DataTemplate local:Views.FaultReportPage}" />
+        </Tab>
+    </FlyoutItem>
+    <FlyoutItem Route="about" Title="About" Style="{StaticResource BaseStyle}">
         <ShellContent Route="home" Title="About" ContentTemplate="{DataTemplate local:Views.AboutPage}" />
     </FlyoutItem>
 </Shell>

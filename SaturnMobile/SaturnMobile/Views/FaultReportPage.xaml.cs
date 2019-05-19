@@ -5,12 +5,11 @@ using Xamarin.Forms.Xaml;
 
 namespace SaturnMobile.Views
 {
-    public partial class AboutPage : ContentPage
+    public partial class FaultReportPage : ContentPage
     {
-        public AboutPage()
+        public FaultReportPage()
         {
             InitializeComponent();
-            BindingContext = new ViewModels.AboutViewModel();
         }
     }
 }
