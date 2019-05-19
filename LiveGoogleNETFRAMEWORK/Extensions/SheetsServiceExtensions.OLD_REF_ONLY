@@ -1,0 +1,171 @@
+﻿    //          // Union field kind can be only one of the following:
+    //          "updateSpreadsheetProperties": {
+    //              object(UpdateSpreadsheetPropertiesRequest)
+    //          },
+    //"updateSheetProperties": {
+    //              object(UpdateSheetPropertiesRequest)
+    //},
+    //"updateDimensionProperties": {
+    //              object(UpdateDimensionPropertiesRequest)
+    //},
+    //"updateNamedRange": {
+    //              object(UpdateNamedRangeRequest)
+    //},
+    //"repeatCell": {
+    //              object(RepeatCellRequest)
+    //},
+    //"addNamedRange": {
+    //              object(AddNamedRangeRequest)
+    //},
+    //"deleteNamedRange": {
+    //              object(DeleteNamedRangeRequest)
+    //},
+    //"addSheet": {
+    //              object(AddSheetRequest)
+    //},
+    //"deleteSheet": {
+    //              object(DeleteSheetRequest)
+    //},
+    //"autoFill": {
+    //              object(AutoFillRequest)
+    //},
+    //"cutPaste": {
+    //              object(CutPasteRequest)
+    //},
+    //"copyPaste": {
+    //              object(CopyPasteRequest)
+    //},
+    //"mergeCells": {
+    //              object(MergeCellsRequest)
+    //},
+    //"unmergeCells": {
+    //              object(UnmergeCellsRequest)
+    //},
+    //"updateBorders": {
+    //              object(UpdateBordersRequest)
+    //},
+    //"updateCells": {
+    //              object(UpdateCellsRequest)
+    //},
+    //"addFilterView": {
+    //              object(AddFilterViewRequest)
+    //},
+    //"appendCells": {
+    //              object(AppendCellsRequest)
+    //},
+    //"clearBasicFilter": {
+    //              object(ClearBasicFilterRequest)
+    //},
+    //"deleteDimension": {
+    //              object(DeleteDimensionRequest)
+    //},
+    //"deleteEmbeddedObject": {
+    //              object(DeleteEmbeddedObjectRequest)
+    //},
+    //"deleteFilterView": {
+    //              object(DeleteFilterViewRequest)
+    //},
+    //"duplicateFilterView": {
+    //              object(DuplicateFilterViewRequest)
+    //},
+    //"duplicateSheet": {
+    //              object(DuplicateSheetRequest)
+    //},
+    //"findReplace": {
+    //              object(FindReplaceRequest)
+    //},
+    //"insertDimension": {
+    //              object(InsertDimensionRequest)
+    //},
+    //"insertRange": {
+    //              object(InsertRangeRequest)
+    //},
+    //"moveDimension": {
+    //              object(MoveDimensionRequest)
+    //},
+    //"updateEmbeddedObjectPosition": {
+    //              object(UpdateEmbeddedObjectPositionRequest)
+    //},
+    //"pasteData": {
+    //              object(PasteDataRequest)
+    //},
+    //"textToColumns": {
+    //              object(TextToColumnsRequest)
+    //},
+    //"updateFilterView": {
+    //              object(UpdateFilterViewRequest)
+    //},
+    //"deleteRange": {
+    //              object(DeleteRangeRequest)
+    //},
+    //"appendDimension": {
+    //              object(AppendDimensionRequest)
+    //},
+    //"addConditionalFormatRule": {
+    //              object(AddConditionalFormatRuleRequest)
+    //},
+    //"updateConditionalFormatRule": {
+    //              object(UpdateConditionalFormatRuleRequest)
+    //},
+    //"deleteConditionalFormatRule": {
+    //              object(DeleteConditionalFormatRuleRequest)
+    //},
+    //"sortRange": {
+    //              object(SortRangeRequest)
+    //},
+    //"setDataValidation": {
+    //              object(SetDataValidationRequest)
+    //},
+    //"setBasicFilter": {
+    //              object(SetBasicFilterRequest)
+    //},
+    //"addProtectedRange": {
+    //              object(AddProtectedRangeRequest)
+    //},
+    //"updateProtectedRange": {
+    //              object(UpdateProtectedRangeRequest)
+    //},
+    //"deleteProtectedRange": {
+    //              object(DeleteProtectedRangeRequest)
+    //},
+    //"autoResizeDimensions": {
+    //              object(AutoResizeDimensionsRequest)
+    //},
+    //"addChart": {
+    //              object(AddChartRequest)
+    //},
+    //"updateChartSpec": {
+    //              object(UpdateChartSpecRequest)
+    //},
+    //"updateBanding": {
+    //              object(UpdateBandingRequest)
+    //},
+    //"addBanding": {
+    //              object(AddBandingRequest)
+    //},
+    //"deleteBanding": {
+    //              object(DeleteBandingRequest)
+    //},
+    //"createDeveloperMetadata": {
+    //              object(CreateDeveloperMetadataRequest)
+    //},
+    //"updateDeveloperMetadata": {
+    //              object(UpdateDeveloperMetadataRequest)
+    //},
+    //"deleteDeveloperMetadata": {
+    //              object(DeleteDeveloperMetadataRequest)
+    //},
+    //"randomizeRange": {
+    //              object(RandomizeRangeRequest)
+    //},
+    //"addDimensionGroup": {
+    //              object(AddDimensionGroupRequest)
+    //},
+    //"deleteDimensionGroup": {
+    //              object(DeleteDimensionGroupRequest)
+    //},
+    //"updateDimensionGroup": {
+    //              object(UpdateDimensionGroupRequest)
+    //}
+    //          // End of list of possible types for union field kind.
+    //      }

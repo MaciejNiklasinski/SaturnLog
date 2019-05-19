@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E432ECFF-0B6A-49E8-A361-0E5D383A3AA3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SaturnLog.Repository</RootNamespace>
+    <AssemblyName>SaturnLog.Repository</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\SaturnLog.UI\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataRepository.cs" />
+    <Compile Include="DatasetConstLibrary.cs" />
+    <Compile Include="EventArgs\UserSpreadsheetAddedEventArgs.cs" />
+    <Compile Include="EventArgs\UserSpreadsheetRemovedEventArgs.cs" />
+    <Compile Include="EventArgs\UserSpreadsheetReplacedEventArgs.cs" />
+    <Compile Include="EventArgs\Saturn5SpreadsheetUnarchivedEventArgs.cs" />
+    <Compile Include="EventArgs\Saturn5SpreadsheetReplacedEventArgs.cs" />
+    <Compile Include="EventArgs\Saturn5SpreadsheetArchivedEventArgs.cs" />
+    <Compile Include="EventArgs\Saturn5SpreadsheetRemovedEventArgs.cs" />
+    <Compile Include="EventArgs\Saturn5SpreadsheetAddedEventArgs.cs" />
+    <Compile Include="EventArgs\UserSpreadsheetLoadedEventArgs.cs" />
+    <Compile Include="EventArgs\Saturn5SpreadsheetLoadedEventArgs.cs" />
+    <Compile Include="Interfaces\IDBSessionRepository.cs" />
+    <Compile Include="Interfaces\IUserDB.cs" />
+    <Compile Include="Interfaces\ISaturn5IssuesDB.cs" />
+    <Compile Include="Interfaces\ISaturn5DB.cs" />
+    <Compile Include="Saturns5DashboardRepository.cs" />
+    <Compile Include="Saturn5IssuesRepository.cs" />
+    <Compile Include="Saturns5MovementRepository.cs" />
+    <Compile Include="UserRepository.cs" />
+    <Compile Include="Saturn5Repository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DateTimeExtensions\DateTimeExtensions.csproj">
+      <Project>{f71ea46a-cc5d-4749-beaf-533eb0f6d2a7}</Project>
+      <Name>DateTimeExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LiveGoogle\LiveGoogle.csproj">
+      <Project>{045875e3-643c-418b-9b5d-129a8c02a570}</Project>
+      <Name>LiveGoogle</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SaturnLog.CoreNETFRAMEWORK\SaturnLog.CoreNETFRAMEWORK.csproj">
+      <Project>{b6cdbbe1-eb50-4e0f-80f5-414add12f1df}</Project>
+      <Name>SaturnLog.CoreNETFRAMEWORK</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StringExtensions\StringExtensions.csproj">
+      <Project>{3b885b59-d59b-49ec-ae49-46a219e2b4cf}</Project>
+      <Name>StringExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TaskExtensions\TaskExtensions.csproj">
+      <Project>{d9f9a2c1-d6aa-4d63-9f64-1894889e5f54}</Project>
+      <Name>TaskExtensions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
