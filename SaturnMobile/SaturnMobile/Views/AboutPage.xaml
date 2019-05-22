@@ -5,9 +5,7 @@
              xmlns:vm="clr-namespace:SaturnMobile.ViewModels" 
              Title="{Binding Title}"
              Visual="Material">
-    <ContentPage.BindingContext>
-        <vm:AboutViewModel />
-    </ContentPage.BindingContext>
+   
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="Primary">LightGray</Color>
