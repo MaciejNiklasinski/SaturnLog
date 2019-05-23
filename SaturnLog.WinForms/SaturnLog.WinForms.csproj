@@ -392,6 +392,10 @@
       <Project>{332c7efb-5284-4e36-b53a-2dbca9002b66}</Project>
       <Name>SaturnLog.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SaturnLog.Repository\SaturnLog.Repository.csproj">
+      <Project>{8e03c1ef-1151-45d8-bf5f-daab09ddb263}</Project>
+      <Name>SaturnLog.Repository</Name>
+    </ProjectReference>
     <ProjectReference Include="..\StringExtensions\StringExtensions.csproj">
       <Project>{3b885b59-d59b-49ec-ae49-46a219e2b4cf}</Project>
       <Name>StringExtensions</Name>
