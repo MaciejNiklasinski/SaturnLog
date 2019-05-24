@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="SaturnLog.UI.Pages.HomePage"
+             xmlns:vm="clr-namespace:SaturnLog.UI.ViewModels"
+             xmlns:converters="clr-namespace:SaturnLog.UI.Converters" 
+             xmlns:controls="clr-namespace:SaturnLog.UI.Controls"             
+             Title="{Binding Title}">
+
+    <ContentPage.BindingContext>
+        <vm:HomeViewModel />
+    </ContentPage.BindingContext>
+
+    <!-- Home Page resources -->
+    <ContentPage.Resources>
+        <!--<ResourceDictionary>
+            <converters:BoolToStyleValueConverter x:Key="BoolToStyleValueConverter"></converters:BoolToStyleValueConverter>
+        </ResourceDictionary>-->
+        <!--<StyleSheet>
+            <![CDATA[
+            .backgroundMobile {
+                background-color: Silver;
+            }
+            
+            .backgroundUWP {
+            
+            }
+            
+            .bodyMobile {
+                color: #fff;
+                align-items: center;
+                justify-content: center;
+                background-color: Silver;
+                flex-direction: column;
+                padding-top: 30;
+                padding-bottom: 30;
+            }
+            
+            .bodyUWP {
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                padding-top: 30;
+                padding-bottom: 30;
+            }
+
+            .connect-containerMobile {
+                background-color: LightGray;
+                width: 300;
+                height: 165;
+                flex-direction: column;
+                margin-top: +10;
+            }
+
+            .connect-containerUWP {
+                background-color: LightGray;
+                width: 300;
+                height: 165;
+                flex-direction: column;
+                margin-top: +10;
+            }
+
+            .login-containerMobile {
+                background-color: LightGray;
+                width: 300;
+                height: 240;
+                flex-direction: column;
+                margin-top: -30;
+            }
+
+            .login-containerUWP {
+                background-color: LightGray;
+                width: 300;
+                height: 240;
+                flex-direction: column;
+                margin-top: -30;
+            }
+
+            .login-form {
+                height: 260;
+                flex-direction: column;
+                margin-top: 20;
+            }
+
+            .logo {
+                font-size: 20;
+                margin-top: 40;
+                text-align: center;
+            }
+
+            .usernameMobileEntry {
+                margin: 10 20 0;
+                color: #fff;
+                height: 40;
+            }
+            
+            .usernameUWPEntry {
+                margin: 0 20 0 20;
+                color: #000000;
+            }
+
+            .enabledButtonMobile {
+                background-color: #F25022;
+            }
+
+            .disabledButtonMobile {
+                background-color: Transparent;
+            }
+
+            .enabledButtonUWP {
+                background-color: #0078D4;            
+            }
+            
+            .disabledButtonUWP {
+                background-color: Transparent;            
+            }
+
+            .Valid {
+                background-color: #fff;
+            }
+
+            .InValid {
+                background-color: #ff0000;
+            }
+
+            .strength {
+                margin-top: 20;
+            }
+            ]]>
+        </StyleSheet>-->
+        
+        
+        <StyleSheet>
+            <![CDATA[
+
+            .login-form {
+                height: 260;
+                flex-direction: column;
+                margin-top: 20;
+            }
+
+            .logo {
+                font-size: 20;
+                margin-top: 40;
+                text-align: center;
+            }
+
+            .usernameMobileEntry {
+                margin: 10 20 0;
+                color: #fff;
+                height: 40;
+            }
+            
+            .usernameUWPEntry {
+                margin: 0 20 0 20;
+                color: #000000;
+            }
+
+            .Valid {
+                background-color: #fff;
+            }
+
+            .InValid {
+                background-color: #ff0000;
+            }
+
+            .strength {
+                margin-top: 20;
+            }
+            ]]>
+        </StyleSheet>
+
+        <!--<![CDATA[
+            .enabledButtonMobile {
+                background-color: #F25022;
+            }
+
+            .disabledButtonMobile {
+                background-color: Transparent;
+            }
+
+            .enabledButtonUWP {
+                background-color: #0078D4;            
+            }
+            
+            .disabledButtonUWP {
+                background-color: Transparent;            
+            }
+            ]]>-->
+
+
+        <!-- Database Form FlexLayout -->
+        <Style x:Key="FlexLayoutDatabaseForm" TargetType="FlexLayout">
+            <Setter Property="BackgroundColor" Value="{OnPlatform Android=LightGray, iOS=LightGray, UWP=LightGray}"/>
+            <Setter Property="WidthRequest" Value="{OnPlatform Android=300, iOS=300, UWP=300}"/>
+            <Setter Property="HeightRequest" Value="{OnPlatform Android=165, iOS=165, UWP=165}"/>
+            <Setter Property="Direction" Value="Column"/>
+            <Setter Property="Margin" Value="0, 10, 0, 0"/>
+        </Style>
+        
+        <!-- Accont Form FlexLayout -->
+        <Style x:Key="FlexLayoutAccontForm" TargetType="FlexLayout">
+            <Setter Property="BackgroundColor" Value="{OnPlatform Android=LightGray, iOS=LightGray, UWP=LightGray}"/>
+            <Setter Property="WidthRequest" Value="{OnPlatform Android=300, iOS=300, UWP=300}"/>
+            <Setter Property="HeightRequest" Value="{OnPlatform Android=240, iOS=240, UWP=240}"/>
+            <Setter Property="Direction" Value="Column"/>
+            <Setter Property="Margin" Value="0, -30, 0, 0"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <!-- Home Page content -->
+    <ScrollView>
+            <!--class="{OnPlatform Android=backgroundMobile, iOS=backgroundMobile, UWP=backgroundUWP}"-->
+        <StackLayout Style="{StaticResource StackLayoutBackground}" x:Name="stackLayoutBackground">
+
+            <!-- Database container. -->
+            <!--class="{OnPlatform Android=bodyMobile, iOS=bodyMobile, UWP=bodyUWP}"-->
+            <FlexLayout Style="{StaticResource FlexLayoutContainer}" x:Name="connectContainer">
+                <!-- Database form. -->
+                <!--class="{OnPlatform Android=connect-containerMobile, iOS=connect-containerMobile, UWP=connect-containerUWP}"-->
+                <FlexLayout x:Name="databaseForm" Style="{StaticResource FlexLayoutDatabaseForm}">
+                    <!-- Database logo. -->
+                    <Label Text="{Binding DatabaseLogoText, FallbackValue=Database}" class="logo" FlexLayout.Shrink="0"/>
+                    <!-- Database form content StackLayout container. -->
+                    <StackLayout FlexLayout.AlignSelf="End" 
+                             FlexLayout.Shrink="0"
+                                 Margin="20, 25, 20, 0" 
+                                 Spacing="25"
+                                 Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+                                <!--Style="{OnPlatform Android={StaticResource Key=DisabledButtonMobile}, iOS={StaticResource Key=DisabledButtonMobile}, UWP={StaticResource Key=DisabledButtonUWP}}"-->
+                                <!--Style="{Binding DisconnectButtonIsEnabled, Converter={StaticResource BoolToStyleValueConverter}}"-->
+                        <controls:ExtendedButton x:Name="disconnectButton" 
+                                EnabledStyle="{StaticResource EnabledButton}"
+                                DisabledStyle="{StaticResource DisabledButton}"
+                                Text="{Binding DisonnectButtonText, FallbackValue=Disconnect}" 
+                                IsEnabled="{Binding DisconnectButtonIsEnabled}"
+                                FontSize="15" 
+                                VerticalOptions="Center" 
+                                Command="{Binding DisconnectCommand}" />
+                        <controls:ExtendedButton  x:Name="connectButton"
+                                EnabledStyle="{StaticResource EnabledButton}"
+                                DisabledStyle="{StaticResource DisabledButton}"
+                                Text="{Binding CnnectButtonText, FallbackValue=Connect}"
+                                IsEnabled="{Binding ConnectButtonIsEnabled}"
+                                Padding="15,0" 
+                                Command="{Binding ConnectCommand}" />
+                    </StackLayout>
+                </FlexLayout>
+            </FlexLayout>
+
+            <!-- Accont container. -->
+            <!--class="{OnPlatform Android=bodyMobile, iOS=bodyMobile, UWP=bodyUWP}"-->
+            <FlexLayout Style="{StaticResource FlexLayoutContainer}" x:Name="accountContainer">
+                <!-- class="{OnPlatform Android=login-containerMobile, iOS=login-containerMobile, UWP=login-containerUWP}"-->
+
+                <!-- Accont form. -->
+                <FlexLayout x:Name="accontForm" Style="{StaticResource FlexLayoutAccontForm}">
+                    <!-- Accont logo. -->
+                    <Label Text="{Binding AccountLogoText, FallbackValue=Account}" class="logo" FlexLayout.Shrink="0"/>
+                    <!-- Accont form content FlexLayout container. -->
+                    <FlexLayout class="login-form">
+
+                        <!-- Create platform specific Username entry control. -->
+                        <!-- Simply change control style depending on platform. -->
+                        <!--<Entry class="{OnPlatform Android=usernameMobileEntry, iOS=usernameMobileEntry, UWP=usernameUWPEntry}" x:Name="UserNameEntry" 
+                           IsSpellCheckEnabled="false" 
+                           MaxLength="7" 
+                           Placeholder="Username"/>-->
+
+                        <!-- Create platform specific Username entry control. -->
+                        <ContentView>
+                            <OnPlatform x:TypeArguments="View">
+                                <OnPlatform.Platforms>
+
+                                    <!-- Create mobile version of entry control -->
+                                    <On Platform="Android, iOS">
+                                        <Entry class="usernameMobileEntry" 
+                                           x:Name="userNameEntryMobile" 
+                                           IsSpellCheckEnabled="false" 
+                                           MaxLength="20" 
+                                           Placeholder="Username"/>
+                                    </On>
+
+                                    <!-- Create desktop version of entry control -->
+                                    <On Platform="UWP">
+                                        <Entry class="usernameUWPEntry" 
+                                           x:Name="userNameEntryUWP" 
+                                           IsSpellCheckEnabled="false" 
+                                           MaxLength="20" 
+                                           Placeholder="Username"/>
+                                    </On>
+                                </OnPlatform.Platforms>
+                            </OnPlatform>
+                        </ContentView>
+
+                        <!--<Entry x:Name="PasswordEntry"
+                           Placeholder="Password" 
+                           IsPassword="true"/>-->
+
+
+                    </FlexLayout>
+                    <StackLayout FlexLayout.AlignSelf="End" 
+                             FlexLayout.Shrink="0"
+                                 Margin="20,25" 
+                                 Spacing="25"
+                                 Orientation="Horizontal" HorizontalOptions="EndAndExpand">
+
+                        <controls:ExtendedButton x:Name="logOutButton" 
+                                EnabledStyle="{StaticResource EnabledButton}"
+                                DisabledStyle="{StaticResource DisabledButton}" 
+                                Text="{Binding LogOutButtonText, FallbackValue=LogOut}" 
+                                IsEnabled="{Binding LogOutButtonIsEnabled}"
+                                FontSize="15" 
+                                VerticalOptions="Center" 
+                                Command="{Binding LogOutCommand}"
+                                />
+                        <controls:ExtendedButton x:Name="logInButton" 
+                                EnabledStyle="{StaticResource EnabledButton}"
+                                DisabledStyle="{StaticResource DisabledButton}"  
+                                Text="{Binding LogInButtonText, FallbackValue=LogIn}" 
+                                IsEnabled="{Binding LogInButtonIsEnabled}"
+                                Padding="15,0" 
+                                Command="{Binding LogInCommand}"
+                                />
+                    </StackLayout>
+                </FlexLayout>
+            </FlexLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

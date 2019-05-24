@@ -43,7 +43,6 @@ namespace SaturnLog.Core
                     return "ADMIN";
                 default:
                     throw new NotImplementedException($"Value {userType.ToString()} of UserType enum has not been implemented.");
-                    break;
             }
         }
 

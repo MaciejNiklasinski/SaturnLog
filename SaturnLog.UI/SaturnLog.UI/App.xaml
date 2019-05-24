@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SaturnLog.UI.App"
+             xmlns:converters="clr-namespace:SaturnLog.UI.Converters">
+
+    <!--<OnPlatform x:TypeArguments="x:Double">
+        <OnPlatform.Platforms>
+            <On Platform="iOS" Value="40" />
+            <On Platform="Android" Value="40" />
+            <On Platform="UWP" Value="40" />
+            </OPllatform.Platforms>
+    </OnPlatform>-->
+
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <!--Value Converters Styles-->
+            <converters:BoolToStyleValueConverter x:Key="BoolToStyleValueConverter"/>
+            <converters:BoolToInvertedBoolValueConverter x:Key="BoolToInvertedBoolValueConverter"/>
+
+            <!--Global Styles-->
+            <Color x:Key="NavigationPrimary">#2196F3</Color>
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="{StaticResource NavigationPrimary}" />
+                <Setter Property="BarTextColor" Value="White" />
+            </Style> 
+            
+            <!-- Background StackLayout -->
+            <Style x:Key="StackLayoutBackground" TargetType="StackLayout">
+                <Setter Property="BackgroundColor" Value="{OnPlatform Android=Silver, iOS=Silver}"/>
+            </Style>
+
+            <!-- Container FlexLayout -->
+            <Style x:Key="FlexLayoutContainer" TargetType="FlexLayout">
+                <Setter Property="AlignItems" Value="Center"/>
+                <Setter Property="JustifyContent" Value="Center"/>
+                <Setter Property="BackgroundColor" Value="{OnPlatform Android=Silver, iOS=Silver}"/>
+                <Setter Property="Direction" Value="Column"/>
+                <Setter Property="Padding" Value="0, 30, 0, 30"/>
+            </Style>
+            
+            <!-- Enabled Button -->    
+            <Style x:Key="EnabledButton" TargetType="Button">
+                <Setter Property="BackgroundColor">
+                    <Setter.Value>
+                        <OnPlatform x:TypeArguments="Color">
+                            <OnPlatform.Platforms>
+                                <On Platform="iOS" Value="#F25022" />
+                                <On Platform="Android" Value="#F25022" />
+                                <On Platform="UWP" Value="#0078D4" />
+                            </OnPlatform.Platforms>
+                        </OnPlatform>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            <!-- DisabledButton Button -->    
+            <Style x:Key="DisabledButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{OnPlatform Android=Transparent, iOS=Transparent, UWP=Transparent }"/>
+                <Setter Property="TextColor" Value="{OnPlatform Android=#ffffff, iOS=#ffffff, UWP=#ffffff }"/>
+            </Style>
+
+
+
+
+
+            <Style x:Key="EnabledButtonMobile" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#F25022"/>
+            </Style>
+            <Style x:Key="DisabledButtonMobile" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+            </Style>
+
+            <Style x:Key="EnabledButtonUWP" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#0078D4"/>
+            </Style>
+
+            <Style x:Key="DisabledButtonUWP" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+    
+</Application>
