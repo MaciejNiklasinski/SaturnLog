@@ -1,4 +1,4 @@
-﻿using System.Globalization;        
+﻿using System.Globalization;
 using System.Net.Sockets;
 using System.IO;
 
@@ -6,69 +6,6 @@ namespace System
 {
     public static class DateTimeExtensions
     {
-        //public static TimeSpan GetSpanFromNowToTimespan(string timestamp)
-        //{
-        //    DateTime now = DateTime.Now;
-
-        //    if (now.IsLaterThan(timestamp))
-        //        throw new ArgumentException("Provided timestamp is associated with a date in the past.");
-
-        //    if (!int.TryParse(timestamp.Substring(11, 2), out int hour))
-        //        throw new ArgumentException($"Invalid timestamp format. Value of the hour cannot be obtained from: '{timestamp.Substring(11, 2)}'", nameof(timestamp));
-
-        //    if (!int.TryParse(timestamp.Substring(14, 2), out int minute))
-        //        throw new ArgumentException($"Invalid timestamp format. Value of the minute cannot be obtained from: '{timestamp.Substring(14, 2)}'", nameof(timestamp));
-
-        //    if (!int.TryParse(timestamp.Substring(17, 2), out int second))
-        //        throw new ArgumentException($"Invalid timestamp format. Value of the second cannot be obtained from: '{timestamp.Substring(17, 2)}'", nameof(timestamp));
-
-        //    int hoursFromStamp = hour - now.Hour;
-        //    if (hoursFromStamp < 0)
-        //        hoursFromStamp = 0;
-
-        //    int minutesFromStamp = minute - now.Minute;
-        //    if (minutesFromStamp < 0)
-        //        minutesFromStamp = 0;
-
-        //    int secondsFromStamp = second - now.Second;
-        //    if (secondsFromStamp < 0)
-        //        secondsFromStamp = 0;
-
-        //    return new TimeSpan(hoursFromStamp, minutesFromStamp, secondsFromStamp);
-        //}
-        //// 0 sec+
-        //public static TimeSpan GetSpanFromTimespanToNow(string timestamp)
-        //{
-        //    DateTime now = DateTime.Now;
-
-        //    if (now.IsEarlierThan(timestamp))
-        //        throw new ArgumentException("Provided timestamp is associated with a date in a future.");
-
-        //    if (!int.TryParse(timestamp.Substring(11, 2), out int hour))
-        //        throw new ArgumentException($"Invalid timestamp format. Value of the hour cannot be obtained from: '{timestamp.Substring(11, 2)}'", nameof(timestamp));
-
-        //    if (!int.TryParse(timestamp.Substring(14, 2), out int minute))
-        //        throw new ArgumentException($"Invalid timestamp format. Value of the minute cannot be obtained from: '{timestamp.Substring(14, 2)}'", nameof(timestamp));
-
-        //    if (!int.TryParse(timestamp.Substring(17, 2), out int second))
-        //        throw new ArgumentException($"Invalid timestamp format. Value of the second cannot be obtained from: '{timestamp.Substring(17, 2)}'", nameof(timestamp));
-
-        //    int hoursFromStamp = now.Hour - hour;
-        //    if (hoursFromStamp < 0)
-        //        hoursFromStamp = 0;
-
-        //    int minutesFromStamp = now.Minute - minute;
-        //    if (minutesFromStamp < 0)
-        //        minutesFromStamp = 0;
-
-        //    int secondsFromStamp = now.Second - second;
-        //    if (secondsFromStamp < 0)
-        //        secondsFromStamp = 0;
-
-        //    return new TimeSpan(hoursFromStamp, minutesFromStamp, secondsFromStamp);
-        //}
-        
-
         // This presumes that weeks start with Monday.
         // Week 1 is the 1st week of the year with a Thursday in it.
 
@@ -167,7 +104,7 @@ namespace System
             if (!int.TryParse(timestamp.Substring(20, 3), out millisecond))
                 throw new ArgumentException($"Invalid timestamp format. Value of the millisecond cannot be obtained from: '{timestamp.Substring(20, 3)}'", nameof(timestamp));
         }
-        
+
         public static bool IsEqualWithTimestamp(this DateTime dateTime, string timestamp)
         {
             return dateTime.ToTimestamp() == timestamp;
@@ -275,7 +212,7 @@ namespace System
             if (dateTime.Millisecond < millisecond) return true;
             else return false;
         }
-        
+
         public static void GetTimestampParams(out DateTime now, out string dateString, out string timeString)
         {
             // Get current date time

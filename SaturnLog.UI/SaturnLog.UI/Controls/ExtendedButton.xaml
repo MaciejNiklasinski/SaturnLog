@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="SaturnLog.UI.Controls.ExtendedButton"
+             xmlns:vm="clr-namespace:SaturnLog.UI.ViewModels"
+             xmlns:converters="clr-namespace:SaturnLog.UI.Converters"
+             x:Name="extendedButton"
+             BackgroundColor="Transparent">
+
+    <ContentView.Content BorderColor="Transparent" CornerRadius="0" Margin="0,0,0,0" Padding="0,0,0,0" HasShadow="False" BackgroundColor="Transparent">
+        <StackLayout BackgroundColor="Transparent">
+            <Button x:Name="enabledButton" BindingContext="{x:Reference extendedButton}" Style="{Binding EnabledStyle}" Text="{Binding Text}" Font="{Binding Font}" FontAttributes="{Binding FontAttributes}" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" VerticalOptions="{Binding VerticalOptions}" Command="{Binding Command}" CommandParameter="{Binding CommandParameter}" IsVisible="{Binding IsEnabled}"/>
+            <Button x:Name="disabledButton" BindingContext="{x:Reference extendedButton}"  Style="{Binding DisabledStyle}" Text="{Binding Text}" Font="{Binding Font}" FontAttributes="{Binding FontAttributes}" FontFamily="{Binding FontFamily}" FontSize="{Binding FontSize}" VerticalOptions="{Binding VerticalOptions}" IsVisible="{Binding IsEnabled, Converter={StaticResource BoolToInvertedBoolValueConverter}}"/>
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>

@@ -328,3 +328,5 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+/SaturnLog.UI/SaturnLog.UI/Controls/DisabledStyleAdjustableButton.xaml
+/SaturnLog.UI/SaturnLog.UI/Controls/DisabledStyleAdjustableButton.xaml.cs
