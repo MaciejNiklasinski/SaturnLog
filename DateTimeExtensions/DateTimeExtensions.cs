@@ -1,6 +1,11 @@
 ﻿using System.Globalization;        
 using System.Net.Sockets;
 using System.IO;
+using System.Net;
+using System.Net.Cache;
+using System.Text.RegularExpressions;
+using System.Linq;
+using System.Text;
 
 namespace System
 {
@@ -67,34 +72,61 @@ namespace System
 
         //    return new TimeSpan(hoursFromStamp, minutesFromStamp, secondsFromStamp);
         //}
-        
 
-        // This presumes that weeks start with Monday.
-        // Week 1 is the 1st week of the year with a Thursday in it.
+        private static bool _internetSynchronised = false;
+        private static TimeSpan _internetDiffrenceTimestamp;
 
-        private static bool _nistSynchronised = false;
-        private static TimeSpan _nistDiffrenceTimestamp;
-
-        public static DateTime GetNISTNow()
+        public static DateTime GetInternetNow()
         {
-            if (!_nistSynchronised)
+            if (!_internetSynchronised)
             {
-                DateTime nistDateTime;
+                int internetHour, internetMinute, internetSecond;
                 DateTime now = DateTime.Now;
+                DateTime internetDateTime = DateTime.Now;
 
-                TcpClient client = new TcpClient("time.nist.gov", 13);
-                using (var streamReader = new StreamReader(client.GetStream()))
+                //string urlAddress = "https://time.nist.gov";
+                string urlAddress = "https://www.timeanddate.com/worldclock/uk";
+                //string urlAddress = "http://nist.time.gov/actualtime.cgi?lzbc=siqm9b";
+                //string urlAddress = "https://www.google.com/search?q=what+time+is+in+uk+right+now";
+
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                if (response.StatusCode == HttpStatusCode.OK)
                 {
-                    string response = streamReader.ReadToEnd();
-                    string utcDateTimeString = response.Substring(7, 17);
-                    nistDateTime = DateTime.ParseExact(utcDateTimeString, "yy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+                    Stream receiveStream = response.GetResponseStream();
+                    StreamReader readStream = null;
+
+                    if (response.CharacterSet == null)
+                    {
+                        readStream = new StreamReader(receiveStream);
+                    }
+                    else
+                    {
+                        readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+                    }
+
+                    string data = readStream.ReadToEnd();
+
+                    int startIndex = data.IndexOf("<span id=ct class=h1>") + "<span id=ct class=h1>".Length; ;
+
+                    string dateTimeStamp = data.Substring(startIndex, 8);
+
+                    internetHour = int.Parse(dateTimeStamp.Substring(0,2));
+                    internetMinute = int.Parse(dateTimeStamp.Substring(3,2));
+                    internetSecond = int.Parse(dateTimeStamp.Substring(6,2));
+
+                    internetDateTime = new DateTime(now.Year, now.Month, now.Day, internetHour, internetMinute, internetSecond);
+
+                    response.Close();
+                    readStream.Close();
                 }
 
-                _nistDiffrenceTimestamp = nistDateTime - now;
-                _nistSynchronised = true;
+                _internetDiffrenceTimestamp = internetDateTime - now;
+                _internetSynchronised = true;
             }
 
-            return DateTime.Now.Add(_nistDiffrenceTimestamp);
+            return DateTime.Now.Add(_internetDiffrenceTimestamp);
         }
 
         public static int GetIso8601WeekOfYear(this DateTime time)

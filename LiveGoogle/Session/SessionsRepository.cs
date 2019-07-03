@@ -71,7 +71,7 @@ namespace LiveGoogle.Session
 
         #region Properties
         public static readonly int SesionIdLenght = SessionsRepository._sessionId.Length;
-        public static readonly int TimestampLenght = DateTimeExtensions.GetNISTNow().ToTimestamp().Length;
+        public static readonly int TimestampLenght = DateTimeExtensions.GetInternetNow().ToTimestamp().Length;
         public static readonly int SessionStampLenght = SessionsRepository.TimestampLenght + SessionsRepository.SesionIdLenght;
 
         public int? SecondsToNewSession { get; private set; } = null;
@@ -107,7 +107,7 @@ namespace LiveGoogle.Session
         #region Static Methods
         public static string GetNowStamp()
         {
-            return SessionsRepository.GetSessionStamp(DateTimeExtensions.GetNISTNow());
+            return SessionsRepository.GetSessionStamp(DateTimeExtensions.GetInternetNow());
         }
 
         public static string GetSessionStamp(DateTime dateTime)
@@ -213,7 +213,7 @@ namespace LiveGoogle.Session
                 {
                     string lastTimestamp = StampsTranslator.GetTimestampStampSection(cachedSessionStamp.Last);
                     DateTime lastDateTime = DateTimeExtensions.FromTimestamp(lastTimestamp);
-                    int secondsElpasedFromLastStamp = (DateTimeExtensions.GetNISTNow() - lastDateTime).Seconds;
+                    int secondsElpasedFromLastStamp = (DateTimeExtensions.GetInternetNow() - lastDateTime).Seconds;
 
                     // If currently owned cached stamp is not older than maintenance refresh await period,
                     // simply return assuming that session control has been assured.
@@ -260,7 +260,7 @@ namespace LiveGoogle.Session
                 SessionsRepository._sessionActive = null;
 
                 // Update end active session appropriate stamps
-                await this._dataOperator.UpdateEndActiveSessionAsync(StampsTranslator.GetStamp(DateTimeExtensions.GetNISTNow()));
+                await this._dataOperator.UpdateEndActiveSessionAsync(StampsTranslator.GetStamp(DateTimeExtensions.GetInternetNow()));
 
                 // Refresh cached sessions stamp
                 await this._dataOperator.RefreshCachedSessionStampAsync();
@@ -336,7 +336,7 @@ namespace LiveGoogle.Session
                     SessionsRepository._token.ThrowIfCancellationRequested();
 
                     // If session active flag still indicates that the session is active update 'Last' stamp value.
-                    await this._dataOperator.UpdateMaintainActiveSessionAsync(StampsTranslator.GetStamp(DateTimeExtensions.GetNISTNow()));
+                    await this._dataOperator.UpdateMaintainActiveSessionAsync(StampsTranslator.GetStamp(DateTimeExtensions.GetInternetNow()));
                 }
             }
             // If forced to disconnect active session, update appropriate end session stamp.
@@ -575,7 +575,7 @@ namespace LiveGoogle.Session
                 SessionsRepository._sessionActive = null;
                 
                 // Update forced to end active session appropriate stamps
-                await this._dataOperator.UpdateForcedEndActiveSessionAsync(StampsTranslator.GetStamp(DateTimeExtensions.GetNISTNow()));
+                await this._dataOperator.UpdateForcedEndActiveSessionAsync(StampsTranslator.GetStamp(DateTimeExtensions.GetInternetNow()));
                 
                 // Refresh cached sessions stamp
                 await this._dataOperator.RefreshCachedSessionStampAsync();
@@ -597,7 +597,7 @@ namespace LiveGoogle.Session
             DateTime lastForcedToDisconnectDateTime = DateTimeExtensions.FromTimestamp(lastForcedToDisconnectTimestamp);
 
             // Calculate number of second elapsed from the time when
-            int stampAgeSec = (int)(DateTimeExtensions.GetNISTNow() - lastForcedToDisconnectDateTime).TotalSeconds;
+            int stampAgeSec = (int)(DateTimeExtensions.GetInternetNow() - lastForcedToDisconnectDateTime).TotalSeconds;
 
             // If last forced to disconnect time indicate that forced disconnect occurred more then 180 seconds ago,
             // return as awaiting session takeover is now longer not-allowed.
@@ -685,7 +685,7 @@ namespace LiveGoogle.Session
             string estimatedConnectTimestamp = estimatedConnectDateTime.ToTimestamp();
 
             // Calculate number of second must elapsed so other application instance would manage to complete its session activation process. from the time when 
-            int stampAwaitSec = (int)(estimatedConnectDateTime - DateTimeExtensions.GetNISTNow()).TotalSeconds;
+            int stampAwaitSec = (int)(estimatedConnectDateTime - DateTimeExtensions.GetInternetNow()).TotalSeconds;
 
             // Set SecondsToNewSession to await estimated amount of time
             // it will take other application instance session to activate + 180 sec 
@@ -729,7 +729,7 @@ namespace LiveGoogle.Session
             this.SecondsToNewSession = 120;
 
             //
-            string stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetNISTNow());
+            string stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetInternetNow());
             await this._dataOperator.UpdateSessionActivationConnectedIn120Async(stamp);
             activationAnalyze.ExpectedConnectedIn120Stamp = stamp;
 
@@ -753,7 +753,7 @@ namespace LiveGoogle.Session
                     await this.AnalyzeCurrentForcedSessionActivationStateAsync(activationAnalyze);
 
                 // Get new current stamp
-                stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetNISTNow());
+                stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetInternetNow());
                 
                 // If currently 90 sec left...
                 if (this.SecondsToNewSession == 90)
@@ -844,7 +844,7 @@ namespace LiveGoogle.Session
             this.SecondsToNewSession = 60;
 
             //
-            string stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetNISTNow());
+            string stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetInternetNow());
             await this._dataOperator.UpdateSessionActivationConnectedIn60Async(stamp);
             activationAnalyze.ExpectedConnectedIn60Stamp = stamp;
 
@@ -868,7 +868,7 @@ namespace LiveGoogle.Session
                     await this.AnalyzeCurrentSessionActivationStateAsync(activationAnalyze);
 
                 // Get new current stamp
-                stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetNISTNow());
+                stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetInternetNow());
 
                 // If currently 45 sec left...
                 if (this.SecondsToNewSession == 45)
@@ -935,7 +935,7 @@ namespace LiveGoogle.Session
             this.SecondsToNewSession = 30;
             
             //
-            string stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetNISTNow());
+            string stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetInternetNow());
             await this._dataOperator.UpdateSessionActivationConnectedIn30Async(stamp);
             activationAnalyze.ExpectedConnectedIn30Stamp = stamp;
 
@@ -960,7 +960,7 @@ namespace LiveGoogle.Session
                     await this.AnalyzeCurrentSessionActivationStateAsync(activationAnalyze);
 
                 // Get current stamp
-                stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetNISTNow());
+                stamp = StampsTranslator.GetStamp(DateTimeExtensions.GetInternetNow());
 
                 // If currently 15 sec left...
                 if (this.SecondsToNewSession == 15)

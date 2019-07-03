@@ -101,7 +101,7 @@ namespace LiveGoogle.Session
                 string timestamp = GetTimestampStampSection(stamp);
                 // .. and convert it into the DateTime.
                 DateTime stampDateTime = DateTimeExtensions.FromTimestamp(timestamp);
-                DateTime now = DateTimeExtensions.GetNISTNow();
+                DateTime now = DateTimeExtensions.GetInternetNow();
 
                 // Calculate number of seconds elapsed from the point when the stamp
                 // has been created, till 'relativeNow'.
@@ -124,7 +124,7 @@ namespace LiveGoogle.Session
                 string timestamp = GetTimestampStampSection(stamp);
                 // .. and convert it into the DateTime.
                 DateTime stampDateTime = DateTimeExtensions.FromTimestamp(timestamp);
-                DateTime now = DateTimeExtensions.GetNISTNow();
+                DateTime now = DateTimeExtensions.GetInternetNow();
 
                 // Calculate number of seconds elapsed from the point when the stamp
                 // has been created, till 'relativeNow'.

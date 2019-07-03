@@ -24,7 +24,7 @@ namespace LiveGoogle.Session
 
         public SessionStamp(int lastAvailableRequests, string lastForcedToDisconnect, string disconnected, string last, string connected, string connectedIn15, string connectedIn30, string connectedIn45, string connectedIn60, string connectedIn90, string connectedIn120)
         {
-            this.ConstructedDateTime = DateTimeExtensions.GetNISTNow();
+            this.ConstructedDateTime = DateTimeExtensions.GetInternetNow();
 
             this.LastAvailableRequests = lastAvailableRequests;
             this.LastForcedToDisconnect = lastForcedToDisconnect;
